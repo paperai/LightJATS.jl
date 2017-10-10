@@ -179,6 +179,18 @@ Textual unit or block; a textual paragraph.
 ## ~~[preformat](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-2er0.html)~~
 Text in which spaces, tabs, and line feeds must be preserved. Content is typically displayed in monofont to preserve character alignment.
 
+## ~~[roman](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-say0.html)~~
+Used to mark text that should remain in roman script no matter what style the surrounding text takes on.
+
+## ~~[ruby](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ety0.html)~~
+An inline wrapper element that surrounds some of the document narrative text in the same way a bold or italic emphasis would. The <ruby> element contains a Ruby Base (<rb> element) which contains the document text and one or more Ruby Textual Annotations (<rt> elements) that apply to that base text.
+
+## ~~[sans-serif](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-gey0.html)~~
+Used to mark text that should appear in a sans-serif font.
+
+## ~~[sc](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ary0.html)~~
+Used to mark text that should appear in a font that creates smaller capital letters.
+
 ## [sec](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-gby0.html)
 Headed group of material; the basic structural unit of the body of a document.
 * ~~label~~ → merge with `title`
@@ -199,15 +211,6 @@ Headed group of material; the basic structural unit of the body of a document.
 
 ## [statement](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sdp0.html)
 Theorem, Lemma, Proof, Postulate, Hypothesis, Proposition, Corollary, or other formal statement, identified as such with a label and usually made typographically distinct from the surrounding text.
-
-## ~~[roman](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-say0.html)~~
-Used to mark text that should remain in roman script no matter what style the surrounding text takes on.
-
-## ~~[sans-serif](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-gey0.html)~~
-Used to mark text that should appear in a sans-serif font.
-
-## ~~[sc](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ary0.html)~~
-Used to mark text that should appear in a font that creates smaller capital letters.
 
 ## ~~[strike](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ezp0.html)~~
 Used to mark text that should appear with a line through it so as to appear struck out.
@@ -240,8 +243,5 @@ Milestone indicating the start of underlined text.
 
 ## ~~[underline-end](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-syk2.html)~~
 Milestone indicating the end of underlined text.
-
-## ~~[ruby](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ety0.html)~~
-An inline wrapper element that surrounds some of the document narrative text in the same way a bold or italic emphasis would. The <ruby> element contains a Ruby Base (<rb> element) which contains the document text and one or more Ruby Textual Annotations (<rt> elements) that apply to that base text.
 
 ## ~~[uri](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-mzk2.html)~~
