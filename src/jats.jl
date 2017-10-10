@@ -110,13 +110,21 @@ function parse_author!(tree::Tree)
 end
 
 function parse_body!(tree::Tree)
-    tree
+    delnodes = Tree[]
+    topdown_filter(tree) do node
+        isempty(node) && return true
+        haskey(keepdict,node.name) && return true
+        if haskey(deldict, node.name)
+            push!(delnodes,node)
+            return false
+        end
+        throw(UnsupportedException("$(node.name) is unsupported."))
+    end
+
 end
 
 function parse_back!(tree::Tree)
-    tree
 end
 
 function parse_floats!(tree::Tree)
-    tree
 end

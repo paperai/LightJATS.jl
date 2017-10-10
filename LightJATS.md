@@ -6,15 +6,61 @@
 * back
 * floats-group
 
+## ~~[award-id](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-n850.html)~~
+
+## [body](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-jn50.html)
+* sec
+
+## ~~bold~~
+
+## ~~[break](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-i380.html)~~
+
+## ~~[chem-struct](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-z480.html)~~
+
+## ~~[chem-struct-wrap](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-d680.html)~~
+
+## [def-list](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-4hx0.html)
+* title
+* term-head?
+* def-head?
+* [def-item](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ndx0.html)
+    * label
+    * term
+    * [def](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-xtx0.html)
+* def-list
+
+## [disp-formula](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-tmx0.html)
+* alternatives?
+* inline-formula
+* fn
+* mml:math
+* xref
+* sub
+* sup
+* label
+* code?
+* preformat?
+
+## [disp-formula-group](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-v8v0.html)
+* label
+* caption
+* disp-formula
+* disp-formula-group
+
+## ~~[disp-quote](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-fuv0.html)~~
+
+## ~~fixed-case~~
+
+## [fn](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-87s0.html)
+* label?
+* p
+
+## ~~[fn-group](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-8fs0.html)~~
+
 ## [front](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-j6s0.html)
 * ~~article-meta~~
     * ~~title-group~~
         * article-title
-        * children of article-title (count):
-        * math (10), styled-content (4124), inline-formula (395), bold(1622), ext-link (24),
-        * named-content (5568), sc (1397), sup (33916), abbrev (4), sub (24324), underline (380),
-        * xref (8864), monospace (37), related-article (25), italic (259660), uri (3), sans-serif (1),
-        * break (45), fn (11), inline-graphic (9)
     * abstract
 * ~~contrib-group~~
     * ~~contrib[@contrib-type="author"]~~ → rename to `author`
@@ -24,185 +70,128 @@
             * surname
             * suffix
 
+## ~~[funding-source](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-d9s0.html)~~
 
-## [body](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-jn50.html)
-* [Paragraph-level Elements]
+## ~~hr~~
+
+## inline-formula
+
+## ~~italic~~
+
+## [list](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-64g0.html)
+
+## mml:math
+
+## ~~monospace~~
+
+## ~~[open-access](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-fkd0.html)~~
+
+## ~~overline~~
+
+## ~~overline-start~~
+
+## ~~overline-end~~
+
+## [p](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7xd0.html)
+* inline-formula
+* tex-math
+* ~~named-content~~
+* ~~styled-content~~
+* fn
+* target
+* xref
+* sub
+* sup
+* code
+* preformat
+* supplementary-material
 * disp-formula
 * disp-formula-group
-* [Lists]
-* [Math Elements]
-* p
-* ~~disp-quote~~
+* Citation Elements?
+    * citation-alternatives> Citation Alternatives
+    * element-citation> Element Citation
+    * mixed-citation> Mixed Citation
+    * nlm-citation> NLM Citation
+* def-list
+* list
 * statement
-* sec
-
-## [back](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-2450.html)
-
-## [floats-group](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-44s0.html)
-* boxed-text
-* fig
-* fig-group
-* table-wrap
-* table-wrap-group
 
 ## [sec](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-gby0.html)
 * ~~label~~ → merge with `title`
 * title
-* disp-formula
-* disp-formula-group
-* [Lists]
-* [Math Elements]
-* p
-* ~~disp-quote~~
-* statement
-* sec
-
-### [p](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7xd0.html)
-* [Linking Elements]
-* [Emphasis Elements]
-* ~~chem-struct~~
-* inline-formula
-* [Math Elements]
-* [Other Inline Elements]
-* fn
-* ~~target~~
-* xref
-* sub
-* sup
-* [Paragraph-level Elements]
-* disp-formula
-* disp-formula-group
-* ~~award-id~~
-* ~~funding-source~~
-* ~~open-access~~
-* [Lists]
-* disp-quote
-* statement
-
-## [boxed-text](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-i950.html)
-* label
-* caption
-* [Paragraph-level Elements]
-* disp-formula
-* disp-formula-group
-* [Lists]
-* [Math Elements]
-* p
-* ~~disp-quote~~
-* statement
-* sec
-
-## [disp-formula](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-tmx0.html)
-
-## [disp-formula-group](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-v8v0.html)
-* label
-* caption
-* [Linking Elements]
-* disp-formula
-* disp-formula-group
-
-## ~~[disp-quote](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-fuv0.html)~~
-
-## [fig](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ib40.html)
-
-## [fig-group](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-83s0.html)
-
-## [table-wrap](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-mb90.html)
-
-## [table-wrap-group](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-c5m0.html)
-
-## [fn](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-87s0.html)
-* label
-* p
-
-## [inline-formula](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-gw70.html)
-* [Linking Elements]
-* ~~hr~~
-* ~~[Emphasis Elements]~~
-* alternatives?
-* [Inline Display Elements]?
-* ~~chem-struct~~
-* inline-formula
-* [Math Elements]
-* [Other Inline Elements]
-* fn
-* ~~target~~
-* xref
-* sub
-* sup
-
-* mml:math 646574
-* alternatives 593978
-* inline-formula 8436
-* inline-graphic 1598358
-
-## [statement](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sdp0.html)
-* ~~label~~ → merge with `title`
-* title
-* p
-
-## [sub](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-9zq0.html)
-* [Emphasis Elements]
-* [Linking Elements]
-* [Math Elements]
-* [Other Inline Elements]
-* inline-formula
-* sub
-* sup
-* xref
-* ~~break~~
-* ~~target~~
-
-### [sup](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-5zb0.html)
-same as `sub`
-
-## [xref](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ucc2.html)
-* styled-content
-* inline-formula
-* named-content
-* strike
-* sup
-* xref
-* break
-* inline-graphic
-* [Emphasis Elements]
-
-## [Paragraph-level Elements]
-* boxed-text
-* chem-struct-wrap
 * code
-* fig
-* fig-group
 * preformat
 * supplementary-material
-* table-wrap
-* table-wrap-group
+* alternatives
+* disp-formula
+* disp-formula-group
+* def-list
+* list
+* mml:math
+* p
+* statement
+* sec
+* fn
+
+## statement
+
+## ~~roman~~
+## ~~sans-serif~~
+## ~~sc~~
+## ~~strike~~
+## ~~underline~~
+## ~~underline-start~~
+## ~~underline-end~~
+## ~~ruby~~
 
 ## [Linking Elements]
-* ~~email~~
-* ~~ext-link~~
-* ~~uri~~
-
-## [Lists]
-* [def-list](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-4hx0.html)
-* [list](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-64g0.html)
-
-## [Math Elements]
-* ~~tex-math~~
-* [mml:math](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-cgn0.html)
+### ~~[email](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-rk40.html)~~
+### ~~[ext-link](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-q740.html)~~
+### ~~[uri](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-mzk2.html)~~
 
 ## [Other Inline Elements]
-* ~~abbrev~~
-* ~~named-content~~
-* ~~styled-content~~
+### ~~[abbrev](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-9p00.html)~~
+### ~~[named-content](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-qk60.html)~~
+### ~~[styled-content](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-piq0.html)~~
 
-## [Emphasis Elements]
-* ~~bold~~
-* ~~italic~~
-* ~~monospace~~
-* ~~overline~~
-* ~~roman~~
-* ~~sans-serif~~
-* ~~sc~~
-* ~~strike~~
-* ~~underline~~
+## [Paragraph-level Elements]
+### boxed-text
+* object-id
+* label
+* caption
+* Paragraph-level Elements
+* disp-formula
+* disp-formula-group
+* Lists
+* Math Elements
+* p
+* statement
+* sec
+
+### [code](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ty80.html)?
+
+### [fig](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ib40.html)
+
+### fig-group
+
+### graphic
+
+### preformat?
+
+### supplementary-material?
+
+### [table](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-by90.html)
+* ~~col~~
+* ~~colgroup~~
+* thead
+* tfoot
+* tbody
+* tr
+    * th
+    * td
+
+### [table-wrap](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-mb90.html)
+
+### [table-wrap-group](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-c5m0.html)
+
+## ~~[target](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-xam0.html)~~
