@@ -44,6 +44,7 @@ Chemical expression, reaction, equation, etc. that is set apart within the text.
 Wrapper element for a chemical expression, reaction, equation, etc. that is set apart from the text; includes any number, label, or caption that accompanies the chemical expression.
 
 ## [code](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ty80.html)
+A container element for technical content such as programming language code, pseudo-code, schemas, or a markup fragment.
 
 ## [def-list](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-4hx0.html)
 List in which each item consists of two parts: (1) a word, phrase, term, graphic, chemical structure, or equation, that is paired with 2) one or more descriptions, discussions, explanations, or definitions of it.
@@ -119,7 +120,8 @@ Container element for the metadata of an article and the journal in which it was
 ## ~~[funding-source](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-d9s0.html)~~
 Agency or organization that funded the research on which a work was based.
 
-## [graphic]
+## [graphic](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-xbt0.html)
+Description of and pointer to an external file containing a still image.
 
 ## ~~[hr](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-du70.html)~~
 An explicit horizontal rule.
@@ -245,3 +247,4 @@ Milestone indicating the start of underlined text.
 Milestone indicating the end of underlined text.
 
 ## ~~[uri](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-mzk2.html)~~
+Identifies a Uniform Resource Identifier (such as a URL) that may be used as a live link, typically naming a website, such as: <uri>http://www.mulberrytech.com</uri>).
