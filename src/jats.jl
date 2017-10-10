@@ -10,7 +10,7 @@ function readjats(path::String)
     try
         xml = xp_parse(open(readstring,path))
         tree = convert(Tree, xml)
-        parse_article!(tree)
+        #parse_article!(tree)
         return tree
     catch e
         if isa(e, UnsupportedException)

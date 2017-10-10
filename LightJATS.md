@@ -1,14 +1,17 @@
-# Light JATS Specification
+# LightJATS Specification v0.1
 
 ## [article](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ja30.html)
+A journal article.
 * front
 * body
 * back
 * floats-group
 
 ## ~~[award-id](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-n850.html)~~
+Unique identifier assigned to an award, contract, or grant.
 
 ## [body](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-jn50.html)
+Main textual portion of the document that conveys the narrative content.
 * sec
 
 ## ~~bold~~
@@ -93,8 +96,8 @@
 ## ~~overline-end~~
 
 ## [p](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7xd0.html)
+Textual unit or block; a textual paragraph.
 * inline-formula
-* tex-math
 * ~~named-content~~
 * ~~styled-content~~
 * fn
@@ -103,7 +106,6 @@
 * sub
 * sup
 * code
-* preformat
 * supplementary-material
 * disp-formula
 * disp-formula-group
@@ -116,11 +118,13 @@
 * list
 * statement
 
+## ~~[preformat](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-2er0.html)~~
+
 ## [sec](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-gby0.html)
 * ~~label~~ → merge with `title`
 * title
 * code
-* preformat
+* ~~preformat~~ → replace with `p`
 * supplementary-material
 * alternatives
 * disp-formula

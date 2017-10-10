@@ -1,4 +1,5 @@
 workspace()
+using LibExpat
 using LightJATS
 
 function test()
@@ -10,4 +11,18 @@ function test()
     align!(pdf, xml)
     #write("s.out", pdf)
 end
-test()
+#test()
+
+function test1()
+    root = "D:/PMC300"
+    for dir in readdir(root)
+        endswith(dir,".xml") || continue
+        println(dir)
+        path = joinpath(root, dir)
+        tree = readjats("$path")
+        topdown(tree) do x
+            x.name == "fn" && println("fn found.")
+        end
+    end
+end
+test1()
