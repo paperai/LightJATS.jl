@@ -12,6 +12,7 @@
         * [caption](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-d580.html)
     * [code](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ty80.html)
     * [def-list](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-4hx0.html)
+        * label → merge with `title`
         * title
         * term-head?
         * def-head?
@@ -21,7 +22,10 @@
             * [def](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-xtx0.html)
     * [disp-formula](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-tmx0.html)
         * [mml:math](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-cgn0.html)
+        * label
     * [disp-formula-group](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-v8v0.html)
+        * label
+        * caption
     * [fig](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ib40.html)
     * [fig-group](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-83s0.html)
     * [list](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-64g0.html)
@@ -42,7 +46,7 @@
                 * td
     * [table-wrap-group](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-c5m0.html)
         * table-wrap
-    * xref
+    * [xref](https://jats.nlm.nih.gov/archiving/tag-library/0.4/n-gnb0.html)
 
 ## [boxed-text](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-i950.html)
 Textual material that is part of the body but is outside the flow of the narrative text (for example, a sidebar).
