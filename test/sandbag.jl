@@ -14,14 +14,14 @@ end
 #test()
 
 function test1()
-    root = "D:/PMC300"
+    root = "D:/PMC500"
     for dir in readdir(root)
         endswith(dir,".xml") || continue
-        println(dir)
+        #println(dir)
         path = joinpath(root, dir)
         tree = readjats("$path")
         topdown(tree) do x
-            x.name == "fn" && println("fn found.")
+            x.name == "term-head" && println("$(dir)\ndef-list found.")
         end
     end
 end
