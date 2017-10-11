@@ -1,4 +1,4 @@
-# LightJATS Specification v0.1
+# LightJATS Specification
 
 ## [article](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ja30.html)
 A journal article.
