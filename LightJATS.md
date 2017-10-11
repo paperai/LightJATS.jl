@@ -1,15 +1,48 @@
 # LightJATS Specification
 
-## [article](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ja30.html)
-A journal article.
-* article-title
-* author
-* sec
-* floats-group
-
-## [body](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-jn50.html)
-Main textual portion of the document that conveys the narrative content.
-* sec
+* [article](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ja30.html)
+    * [article-title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-e630.html)
+    * ~~[contrib[@contrib-type="author"]](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-n3w0.html)~~ → rename to `author`
+        * [prefix](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-jxr0.html)
+        * [given-names](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-fwt0.html)
+        * [surname](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sg90.html)
+        * [suffix](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-djb0.html)
+    * [boxed-text](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-i950.html)
+        * [label](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sqf0.html)
+        * [caption](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-d580.html)
+    * [code](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ty80.html)
+    * [def-list](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-4hx0.html)
+        * title
+        * term-head?
+        * def-head?
+        * [def-item](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ndx0.html)
+            * label
+            * term
+            * [def](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-xtx0.html)
+    * [disp-formula](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-tmx0.html)
+        * [mml:math](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-cgn0.html)
+    * [disp-formula-group](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-v8v0.html)
+    * [fig](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ib40.html)
+    * [fig-group](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-83s0.html)
+    * [list](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-64g0.html)
+    * [p](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7xd0.html)
+    * [sec](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-gby0.html)
+        * label → merge with `title`
+        * title
+    * [statement](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sdp0.html)
+    * sub
+    * sup
+    * [table-wrap](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-mb90.html)
+        * [table](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-by90.html)
+            * thead
+            * tfoot
+            * tbody
+            * tr
+                * th
+                * td
+    * [table-wrap-group](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-c5m0.html)
+        * table-wrap
+    * xref
 
 ## [boxed-text](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-i950.html)
 Textual material that is part of the body but is outside the flow of the narrative text (for example, a sidebar).
@@ -18,6 +51,8 @@ Textual material that is part of the body but is outside the flow of the narrati
 * disp-formula
 * disp-formula-group
 * def-list
+* fn
+* inline-formula
 * list
 * p
 * statement
@@ -27,6 +62,7 @@ Textual material that is part of the body but is outside the flow of the narrati
 * fig-group
 * fig
 * table-wrap
+
 
 ## [code](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ty80.html)
 A container element for technical content such as programming language code, pseudo-code, schemas, or a markup fragment.
