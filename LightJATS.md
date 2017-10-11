@@ -2,9 +2,9 @@
 
 ## [article](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ja30.html)
 A journal article.
-* front
-* body
-* back
+* article-title
+* author
+* sec
 * floats-group
 
 ## [body](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-jn50.html)
@@ -13,17 +13,20 @@ Main textual portion of the document that conveys the narrative content.
 
 ## [boxed-text](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-i950.html)
 Textual material that is part of the body but is outside the flow of the narrative text (for example, a sidebar).
-* object-id
 * label
 * caption
-* Paragraph-level Elements
 * disp-formula
 * disp-formula-group
-* Lists
-* Math Elements
+* def-list
+* list
 * p
 * statement
 * sec
+* boxed-text
+* code
+* fig-group
+* fig
+* table-wrap
 
 ## [code](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ty80.html)
 A container element for technical content such as programming language code, pseudo-code, schemas, or a markup fragment.
@@ -41,16 +44,12 @@ List in which each item consists of two parts: (1) a word, phrase, term, graphic
 
 ## [disp-formula](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-tmx0.html)
 Mathematical equation, expression, or formula that is to be displayed as a block (callout) within the narrative flow.
-* alternatives
 * inline-formula
-* fn
-* mml:math
 * xref
 * sub
 * sup
 * label
-* code?
-* preformat?
+* code
 
 ## [disp-formula-group](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-v8v0.html)
 Container element for equations or other mathematical expressions.
@@ -67,7 +66,7 @@ Container element for figures that are to be displayed together.
 
 ## [fn](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-87s0.html)
 Additional information tied to a particular location in the text. This material is not considered to be part of the body of the text, but is a note used instead of, in addition to, as a source for, or as a commentary on either some body text or on an element in the metadata such as an author.
-* label?
+* label
 * p
 
 ## [front](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-j6s0.html)
