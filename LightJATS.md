@@ -36,7 +36,6 @@
                 * [th](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-cuz0.html)
                 * [td](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-tsm0.html)
     * [table-wrap-group](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-c5m0.html)
-        * [table-wrap](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-mb90.html)
     * [title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7fz0.html)
     * [xref](https://jats.nlm.nih.gov/archiving/tag-library/0.4/n-gnb0.html)
 
