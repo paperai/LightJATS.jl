@@ -11,7 +11,8 @@ function test()
     align!(pdf, xml)
     #write("s.out", pdf)
 end
-#test()
+t = test()
+find(n -> n.name == "sec", t)
 
 function test1()
     root = "D:/PMC500"

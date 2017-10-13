@@ -10,7 +10,7 @@ function readjats(path::String)
     try
         xml = xp_parse(open(readstring,path))
         tree = convert(Tree, xml)
-        #parse_article!(tree)
+        clean!(tree)
         return tree
     catch e
         if isa(e, UnsupportedException)
@@ -33,6 +33,25 @@ function Base.convert(::Type{Tree}, etree::ETree)
         end
     end
     t
+end
+
+function clean!(tree::Tree)
+    tree.name == "contrib" && tree["contrib-type"] == "author" && (tree.name = "author")
+    tree.attr = nothing
+    children = Tree[]
+    for c in tree.children
+        clean!(c)
+        if isempty(c) || haskey(tagdict,c.name)
+            push!(children, c)
+        else
+            append!(children, c.children)
+        end
+    end
+
+    if isroot(tree)
+        children = filter!(!isempty, children)
+    end
+    setchildren!(tree, children)
 end
 
 function parse_article!(tree::Tree)

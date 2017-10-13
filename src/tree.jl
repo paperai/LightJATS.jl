@@ -61,6 +61,18 @@ function Base.delete!(tree::Tree)
     deleteat!(tree.parent, i)
     tree.parent = nothing
 end
+function removeat!(tree::Tree, i::Int)
+    children = Tree[]
+    tree[i].parent = nothing
+    for k = 1:length(tree)
+        if k == i
+            append!(children, tree[k].children)
+        else
+            push!(children, tree[k])
+        end
+    end
+    setchildren!(tree, children)
+end
 function Base.empty!(tree::Tree)
     foreach(c -> c.parent = nothing, tree.children)
     empty!(tree.children)
