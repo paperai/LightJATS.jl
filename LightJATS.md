@@ -56,6 +56,3 @@
         * [label](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sqf0.html)
         * [caption](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-d580.html)
     * [xref](https://jats.nlm.nih.gov/archiving/tag-library/0.4/n-gnb0.html)
-
-## MathML Specification
-To be written...

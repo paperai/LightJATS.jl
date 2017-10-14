@@ -9,8 +9,64 @@ end
 function readjats(path::String)
     try
         xml = xp_parse(open(readstring,path))
-        tree = convert(Tree, xml)
-        clean!(tree)
+        for n in xml["//contrib[@contrib-type=\"author\"]"]
+            n.name = "author"
+        end
+        xpath = """
+            front//article-title
+            | front//article-title
+            | front//author
+            | front//author/name/prefix
+            | front//author/name/given-names
+            | front//author/name/surname
+            | front//author/name/suffix
+            | //boxed-text
+            | //boxed-text/label
+            | //boxed-text/caption
+            | //code
+            | //def-list
+            | //def-list/label
+            | //def-list/title
+            | //def-list/def-item
+            | //def-list/def-item/term
+            | //def-list/def-item/def
+            | //disp-formula
+            | //disp-formula//mml:math
+            | //disp-formula/label
+            | //disp-formula-group/label
+            | //disp-formula-group/caption
+            | //fig
+            | //fig/label
+            | //fig/caption
+            | //fig-group
+            | //fig-group/label
+            | //fig-group/caption
+            | //list
+            | //list/label
+            | //list/title
+            | //list/list-item
+            | //p
+            | //sec
+            | //sec/label
+            | //sec/title
+            | //statement
+            | //statement/label
+            | //statement/title
+            | //table
+            | //table-wrap
+            | //table-wrap/label
+            | //table-wrap/caption
+            | //table-wrap-group
+            | //table-wrap-group/label
+            | //table-wrap-group/caption
+            """
+
+        dict = Dict()
+        for node in xml[xpath]
+            dict[node] = node
+        end
+        tree = convert(Tree, xml, dict)
+        setchildren!(tree, filter(!isempty,tree.children))
         return tree
     catch e
         if isa(e, UnsupportedException)
@@ -22,14 +78,19 @@ function readjats(path::String)
     end
 end
 
-function Base.convert(::Type{Tree}, etree::ETree)
-    t = Tree(etree.name, Tree[], etree.attr)
+function Base.convert(::Type{Tree}, etree::ETree, dict::Dict)
+    t = Tree(etree.name, Tree[])
     for e in etree.elements
         if isa(e, String)
             ismatch(r"^\s*$",e) && continue
             push!(t, Tree(e))
         else
-            push!(t, convert(Tree,e))
+            c = convert(Tree, e, dict)
+            if haskey(dict, e)
+                push!(t, c)
+            else
+                append!(t, c.children)
+            end
         end
     end
     t
@@ -41,7 +102,9 @@ function clean!(tree::Tree)
     children = Tree[]
     for c in tree.children
         clean!(c)
-        if isempty(c) || haskey(tagdict,c.name)
+        if c.name == "label" || c.name == "caption" || c.name == "title"
+            haskey(tagdict,tree.name) && push!(children,c)
+        elseif isempty(c) || haskey(tagdict,c.name)
             push!(children, c)
         else
             append!(children, c.children)
@@ -49,7 +112,7 @@ function clean!(tree::Tree)
     end
 
     if isroot(tree)
-        children = filter!(!isempty, children)
+        filter!(!isempty, children)
     end
     setchildren!(tree, children)
 end

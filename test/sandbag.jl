@@ -12,18 +12,16 @@ function test()
     #write("s.out", pdf)
 end
 t = test()
+t["//sec | //p | //fig/caption"]
 find(n -> n.name == "sec", t)
 
 function test1()
     root = "D:/PMC500"
     for dir in readdir(root)
         endswith(dir,".xml") || continue
-        #println(dir)
+        println(dir)
         path = joinpath(root, dir)
         tree = readjats("$path")
-        topdown(tree) do x
-            x.name == "term-head" && println("$(dir)\ndef-list found.")
-        end
     end
 end
 test1()
