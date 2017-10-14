@@ -39,34 +39,24 @@
         * ~~[label](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sqf0.html)~~ → merge with `title`
         * [title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7fz0.html)
         * [ref](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-2mh0.html)
+            * ~~element-citation~~ → rename to `citation`
+            * ~~mixed-citation~~ → rename to `citation`
             * citation
                 * article-title
-                * collab
                 * name
+                * collab
                 * day
                 * month
                 * year
-                * edition
-                * publisher-name
-                * publisher-loc
-                * pub-id
-                * volume
                 * fpage
                 * lpage
-                * source
                 * issue
-                * ~~string-name~~ → NG
-                * ~~person-group~~
-                * ~~comment~~
-                * ~~elocation-id"=>1~~
-                * ~~named-content"=>1~~
-                * ~~issue-title"=>1~~
-                * ~~etal"=>7~~
-                * ~~xref"=>27~~
-                * ~~size"=>1~~
-                * ~~date-in-citation"=>8~~
-            * ~~element-citation~~
-            * ~~mixed-citation~~
+                * pub-id
+                * publisher-loc
+                * publisher-name
+                * source
+                * edition
+                * volume
     * [sec](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-gby0.html)
         * ~~[label](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sqf0.html)~~ → merge with `title`
         * [title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7fz0.html)

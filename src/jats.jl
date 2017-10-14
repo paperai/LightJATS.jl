@@ -118,7 +118,7 @@ function parse_body(body::ETree)
     dict = Dict(n => n for n in body[xpath])
     dict[body] = body
     tree = convert(Tree, body, dict)
-
+    tree
 end
 
 function parse_back(etree::ETree)
