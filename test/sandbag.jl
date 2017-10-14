@@ -12,6 +12,8 @@ function test()
     #write("s.out", pdf)
 end
 t = test()
+t["body/seca"]
+
 t["//sec | //p | //fig/caption"]
 find(n -> n.name == "sec", t)
 

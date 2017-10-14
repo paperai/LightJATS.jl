@@ -7,6 +7,7 @@
         * [given-names](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-fwt0.html)
         * [surname](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sg90.html)
         * [suffix](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-djb0.html)
+    * [abstract](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ba20.html)
     * [boxed-text](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-i950.html)
         * [label](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sqf0.html)
         * [caption](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-d580.html)
@@ -34,6 +35,38 @@
         * [title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7fz0.html)
         * [list-item](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ctg0.html)
     * [p](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7xd0.html)
+    * [ref-list](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-g2i0.html)
+        * ~~[label](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sqf0.html)~~ → merge with `title`
+        * [title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7fz0.html)
+        * [ref](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-2mh0.html)
+            * citation
+                * article-title
+                * collab
+                * name
+                * day
+                * month
+                * year
+                * edition
+                * publisher-name
+                * publisher-loc
+                * pub-id
+                * volume
+                * fpage
+                * lpage
+                * source
+                * issue
+                * ~~string-name~~ → NG
+                * ~~person-group~~
+                * ~~comment~~
+                * ~~elocation-id"=>1~~
+                * ~~named-content"=>1~~
+                * ~~issue-title"=>1~~
+                * ~~etal"=>7~~
+                * ~~xref"=>27~~
+                * ~~size"=>1~~
+                * ~~date-in-citation"=>8~~
+            * ~~element-citation~~
+            * ~~mixed-citation~~
     * [sec](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-gby0.html)
         * ~~[label](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sqf0.html)~~ → merge with `title`
         * [title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7fz0.html)

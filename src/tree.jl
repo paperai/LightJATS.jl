@@ -4,12 +4,11 @@ export topdown, setchildren!, toxml, tosexpr
 mutable struct Tree
     name
     children::Vector{Tree}
-    attr
     parent
 end
 
-function Tree(name, children::Vector{Tree}, attr=nothing)
-    t = Tree(name, children, attr, nothing)
+function Tree(name, children::Vector{Tree})
+    t = Tree(name, children, nothing)
     for c in children
         c.parent = t
     end
@@ -21,18 +20,10 @@ Tree(name) = Tree(name, Tree[])
 isroot(tree::Tree) = isa(tree.parent, Void)
 
 Base.getindex(tree::Tree, key::Int) = tree.children[key]
-function Base.getindex(tree::Tree, key::String)
-    tree.attr == nothing && return ""
-    haskey(tree.attr,key) ? tree.attr[key] : ""
-end
 
 function Base.setindex!(tree::Tree, value::Tree, key::Int)
     tree.children[key] = value
     value.parent = tree
-end
-function Base.setindex!(tree::Tree, value::String, key::String)
-    tree.attr == nothing && (tree.attr = Dict{String,String}())
-    tree.attr[key] = value
 end
 Base.isempty(tree::Tree) = isempty(tree.children)
 Base.length(tree::Tree) = length(tree.children)
