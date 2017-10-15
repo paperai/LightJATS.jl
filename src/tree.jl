@@ -1,5 +1,5 @@
 export Tree
-export topdown, setchildren!, toxml, tosexpr
+export toxml, tosexpr
 
 mutable struct Tree
     name

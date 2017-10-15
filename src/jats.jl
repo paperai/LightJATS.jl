@@ -1,4 +1,4 @@
-export readjats
+export convert_jats
 
 using LibExpat
 
@@ -6,15 +6,18 @@ struct UnsupportedException <: Exception
     message::String
 end
 
-function readjats(path::String)
+function convert_jats(path::String)
     try
         xml = xp_parse(open(readstring,path))
         @assert xml.name == "article"
         article = Tree("article")
         front = xml["front"][1]
         append!(article, parse_front(front).children)
+
         body = xml["body"][1]
         append!(article, parse_body(body).children)
+
+        floats = xml["floats-group"]
         return article
     catch e
         if isa(e, UnsupportedException)
@@ -122,7 +125,35 @@ function parse_body(body::ETree)
 end
 
 function parse_back(etree::ETree)
-
+    tree = Tree(back.name)
+    for node in etree["//element-citation | //mixed-citation"]
+        node.name = "citation"
+    end
+    xpath = """
+        ref-list
+        | ref-list/label
+        | ref-list/title
+        | ref-list/ref
+        | ref-list/ref/citation
+        | ref-list/ref/citation/article-title
+        | ref-list/ref/citation/name
+        | ref-list/ref/citation/collab
+        | ref-list/ref/citation/day
+        | ref-list/ref/citation/month
+        | ref-list/ref/citation/year
+        | ref-list/ref/citation/fpage
+        | ref-list/ref/citation/lpage
+        | ref-list/ref/citation/issue
+        | ref-list/ref/citation/pub-id
+        | ref-list/ref/citation/publisher-loc
+        | ref-list/ref/citation/publisher-name
+        | ref-list/ref/citation/source
+        | ref-list/ref/citation/edition
+        | ref-list/ref/citation/volume
+        """
+    dict = Dict(n => n for n in etree[xpath])
+    dict[etree] = etree
+    convert(Tree, etree, dict)
 end
 
 function merge(tree::Tree)
