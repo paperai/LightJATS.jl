@@ -8,4 +8,4 @@ julia> Pkg.clone("https://github.com/paperai/LightJATS.jl.git")
 ```
 
 ## Functions
-* `convert_jats(path::String)`: convert JATS to LightJATS
+* `convertjats(path::String)`: convert JATS to LightJATS

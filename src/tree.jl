@@ -85,6 +85,7 @@ function setchildren!(tree::Tree, children::Vector{Tree})
     foreach(c -> c.parent = tree, children)
     tree.children = children
 end
+setchildren!(tree::Tree, children::Tree...) = setchildren!(tree, [children...])
 
 function topdown(f, tree::Tree)
     f(tree)
@@ -117,16 +118,26 @@ function tosexpr(tree::Tree)
 end
 
 function toxml(tree::Tree)
+    function escape(str::String)
+        str = replace(str, "&", "&amp;")
+        str = replace(str, ">", "&gt;")
+        str = replace(str, "<", "&lt;")
+        str = replace(str, "'", "&apos;")
+        str = replace(str, "\"", "&quot;")
+        str
+    end
+
     strs = String[]
     isa(tree.parent,Void) && push!(strs,"<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
+    name = escape(tree.name)
     if isempty(tree)
-        push!(strs, tree.name)
+        push!(strs, name)
     else
-        push!(strs, "<$(tree.name)>")
+        push!(strs, "<$name>")
         for c in tree.children
             push!(strs, toxml(c))
         end
-        push!(strs, "</$(tree.name)>")
+        push!(strs, "</$name>")
     end
     join(strs, "\n")
 end

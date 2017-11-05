@@ -1,4 +1,4 @@
-export convert_jats
+export readjats
 
 using LibExpat
 
@@ -6,18 +6,19 @@ struct UnsupportedException <: Exception
     message::String
 end
 
-function convert_jats(path::String)
+function readjats(path::String)
     try
         xml = xp_parse(open(readstring,path))
         @assert xml.name == "article"
         article = Tree("article")
         front = xml["front"][1]
         append!(article, parse_front(front).children)
+        #jsonize!(article)
 
         body = xml["body"][1]
         append!(article, parse_body(body).children)
 
-        floats = xml["floats-group"]
+        #floats = xml["floats-group"]
         return article
     catch e
         if isa(e, UnsupportedException)
@@ -160,6 +161,26 @@ function merge(tree::Tree)
     for i = 1:length(tree)-1
         if tree[i].name == "label" && tree[i+1].name == "title"
 
+        end
+    end
+end
+
+const jsondict = Dict(t => t for t in [
+    "article-title",
+    "prefix",
+    "given-names",
+    "surname",
+    "suffix",
+    "abstract",
+    ]
+)
+
+function jsonize!(tree::Tree)
+    if haskey(jsondict, tree.name)
+        setchildren!(tree, Tree(string(tree)))
+    else
+        for c in tree.children
+            jsonize!(c)
         end
     end
 end
