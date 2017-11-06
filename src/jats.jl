@@ -13,10 +13,15 @@ function readjats(path::String)
         article = Tree("article")
         front = xml["front"][1]
         append!(article, parse_front(front).children)
-        #jsonize!(article)
+        push!(article, Tree("booktitle",Tree("ACL")))
+        push!(article, Tree("year",Tree("2017")))
+        push!(article, Tree("url",Tree("http://www.aclweb.org/anthology/P12-1046")))
 
         body = xml["body"][1]
         append!(article, parse_body(body).children)
+
+        jsonize!(article)
+        return article
 
         #floats = xml["floats-group"]
         return article
@@ -172,6 +177,23 @@ const jsondict = Dict(t => t for t in [
     "surname",
     "suffix",
     "abstract",
+    "boxed-text",
+    "label",
+    "caption",
+    "code",
+    "def-list",
+    "title",
+    "disp-formula",
+    "fig",
+    "fig-group",
+    "list",
+    "list-item",
+    "p",
+    "sec"
+    "statement",
+    "table",
+    "table-wrap",
+    "table-wrap-group",
     ]
 )
 
