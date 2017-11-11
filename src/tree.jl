@@ -1,5 +1,5 @@
 export Tree
-export toxml, tosexpr
+export topdown, topdown_while, toxml, tosexpr
 
 mutable struct Tree
     name
@@ -102,10 +102,12 @@ function topdown(f, tree::Tree)
     end
 end
 
-function topdown_filter(f::Function, tree::Tree)
-    f(tree) || return
+function topdown_while(f::Function, tree::Tree)
+    cond = f(tree)
+    @assert isa(cond,Bool)
+    cond || return
     for c in tree.children
-        topdown_filter(f, c)
+        topdown_while(f, c)
     end
 end
 

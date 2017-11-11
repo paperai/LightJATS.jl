@@ -12,16 +12,19 @@ function readjats(path::String)
         @assert xml.name == "article"
         article = Tree("article")
         front = xml["front"][1]
-        append!(article, parse_front(front).children)
-        push!(article, Tree("booktitle",Tree("ACL")))
-        push!(article, Tree("year",Tree("2017")))
-        push!(article, Tree("url",Tree("http://www.aclweb.org/anthology/P12-1046")))
-        #jsonize!(article)
+        push!(article, parse_front(front))
+        push!(article[1], Tree("booktitle",Tree("ACL")))
+        push!(article[1], Tree("year",Tree("2017")))
+        push!(article[1], Tree("url",Tree("http://www.aclweb.org/anthology/P12-1046")))
 
         body = xml["body"][1]
         append!(article, parse_body(body).children)
-
-        #floats = xml["floats-group"]
+        push!(article, Tree("floats-group"))
+        append!(article[end], findfloats(article))
+        floats = xml["floats-group"]
+        if !isempty(floats)
+            append!(article[end], parse_body(floats[1]).children)
+        end
 
         postprocess!(article)
         #jsonize!(article)
@@ -86,6 +89,7 @@ function parse_body(body::ETree)
         //boxed-text
         | //boxed-text/label
         | //boxed-text/caption
+        | //boxed-text/caption/title
         | //code
         | //def-list
         | //def-list/label
@@ -95,16 +99,19 @@ function parse_body(body::ETree)
         | //def-list/def-item/def
         | //disp-formula
         | //disp-formula//mml:math
-        | //disp-formula//mml:math/*
+        | //disp-formula//mml:math//*
         | //disp-formula/label
         | //disp-formula-group/label
         | //disp-formula-group/caption
+        | //disp-formula-group/caption/title
         | //fig
         | //fig/label
         | //fig/caption
+        | //fig/caption/title
         | //fig-group
         | //fig-group/label
         | //fig-group/caption
+        | //fig-group/caption/title
         | //list
         | //list/label
         | //list/title
@@ -126,26 +133,24 @@ function parse_body(body::ETree)
         | //table-wrap
         | //table-wrap/label
         | //table-wrap/caption
+        | //table-wrap/caption/title
         | //table-wrap-group
         | //table-wrap-group/label
         | //table-wrap-group/caption
+        | //table-wrap-group/caption/title
         | //sub
         | //sup
         | //xref
         """
-    nodes = body[xpath]
-    for node in nodes
-        node.name == "label"
-    end
-    dict = Dict(n => n for n in nodes)
+    dict = Dict(n => n for n in body[xpath])
     dict[body] = body
     tree = convert(Tree, body, dict)
     tree
 end
 
-function parse_back(etree::ETree)
+function parse_back(back::ETree)
     tree = Tree(back.name)
-    for node in etree["//element-citation | //mixed-citation"]
+    for node in back["//element-citation | //mixed-citation"]
         node.name = "citation"
     end
     xpath = """
@@ -170,17 +175,23 @@ function parse_back(etree::ETree)
         | ref-list/ref/citation/edition
         | ref-list/ref/citation/volume
         """
-    dict = Dict(n => n for n in etree[xpath])
+    dict = Dict(n => n for n in back[xpath])
     dict[etree] = etree
     convert(Tree, etree, dict)
 end
 
-function merge(tree::Tree)
-    for i = 1:length(tree)-1
-        if tree[i].name == "label" && tree[i+1].name == "title"
-
+function findfloats(tree::Tree)
+    floatset = Set(["boxed-text","code","fig","fig-group","table-wrap","table-wrap-group"])
+    floats = Tree[]
+    topdown_while(tree) do t
+        if t.name in floatset
+            push!(floats, t)
+            false
+        else
+            true
         end
     end
+    floats
 end
 
 function postprocess!(tree::Tree)
@@ -191,6 +202,7 @@ function postprocess!(tree::Tree)
             deleteat!(tree, i-1)
         end
     end
+    foreach(postprocess!, tree.children)
 end
 
 function jsonize!(tree::Tree)
