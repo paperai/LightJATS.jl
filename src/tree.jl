@@ -38,6 +38,14 @@ function Base.push!(tree::Tree, children::Tree...)
 end
 Base.append!(tree::Tree, children) = push!(tree, children...)
 
+function Base.prepend!(tree::Tree, children)
+    prepend!(tree.children, children)
+    for c in children
+        delete!(c)
+        c.parent = tree
+    end
+end
+
 function Base.insert!(tree::Tree, i::Int, child::Tree)
     insert!(tree.children, i, child)
     child.parent = tree

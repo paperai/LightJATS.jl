@@ -4,30 +4,30 @@ using LightJATS
 
 function test()
     path = joinpath(dirname(@__FILE__), "../.data/journal.pone.0170111")
-    #path = "C:/Users/hshindo/Desktop/PMC300/PMC3000813"
+    #path = "C:/Users/hshindo/Desktop/PMC500/PMC5000010"
     tree = readjats("$path.xml")
-    return tree
+    open("C:/Users/hshindo/Desktop/temp/a.xml","w") do f
+        println(f, toxml(tree))
+    end
+    return
     #pdf = readpdf("$path.pdf")
-    #align("$path.pdf", "$path.xml")
+    align("$path.pdf", "$path.xml")
     #write("s.out", pdf)
 end
 t = test()
-t["body/seca"]
-
-t["//sec | //p | //fig/caption"]
-find(n -> n.name == "sec", t)
 
 function test1()
-    root = "D:/PMC500"
+    root = "C:/Users/hshindo/Desktop/PMC500"
     for dir in readdir(root)
         endswith(dir,".xml") || continue
         println(dir)
         path = joinpath(root, dir)
         tree = readjats(path)
         xml = toxml(tree)
-        open("D:/temp/$dir","w") do f
+        open("C:/Users/hshindo/Desktop/temp/$dir","w") do f
             println(f, xml)
         end
+        return
     end
 end
 test1()

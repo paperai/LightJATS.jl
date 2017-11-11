@@ -7,10 +7,11 @@ function align(pdffile::String, xmlfile::String)
     pdids = map(x -> get!(iddict,x.c,length(iddict)+1), pdchars)
 
     xmltree = readjats(xmlfile)
-    ps = find(t -> t.name == "p", xmltree)
-    for p in ps
-        xmlchars = Vector{Char}(string(p))
-        xmlids = map(c -> get!(iddict,string(c),length(iddict)+1), xmlchars)
-        StringMatch.match(pdids, xmlids)
+    xmlchars = Vector{Char}(string(p))
+    xmlids = map(c -> get!(iddict,string(c),length(iddict)+1), xmlchars)
+    m = StringMatch.match(pdids, xmlids)
+
+    for (k,v) in m
+        pdchars[k].tag = xmlchars[v]
     end
 end

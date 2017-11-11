@@ -16,14 +16,15 @@ function readjats(path::String)
         push!(article, Tree("booktitle",Tree("ACL")))
         push!(article, Tree("year",Tree("2017")))
         push!(article, Tree("url",Tree("http://www.aclweb.org/anthology/P12-1046")))
+        #jsonize!(article)
 
         body = xml["body"][1]
         append!(article, parse_body(body).children)
 
-        jsonize!(article)
-        return article
-
         #floats = xml["floats-group"]
+
+        postprocess!(article)
+        #jsonize!(article)
         return article
     catch e
         if isa(e, UnsupportedException)
@@ -40,7 +41,12 @@ function Base.convert(::Type{Tree}, etree::ETree, dict::Dict)
     for e in etree.elements
         if isa(e, String)
             ismatch(r"^\s*$",e) && continue
-            haskey(dict,etree) && push!(t,Tree(e))
+            haskey(dict,etree) || continue
+            if isempty(t) || !isempty(t[end])
+                push!(t, Tree(e))
+            else
+                t[end].name *= e
+            end
         else
             c = convert(Tree, e, dict)
             haskey(dict,e) ? push!(t,c) : append!(t,c.children)
@@ -89,6 +95,7 @@ function parse_body(body::ETree)
         | //def-list/def-item/def
         | //disp-formula
         | //disp-formula//mml:math
+        | //disp-formula//mml:math/*
         | //disp-formula/label
         | //disp-formula-group/label
         | //disp-formula-group/caption
@@ -109,22 +116,28 @@ function parse_body(body::ETree)
         | //statement
         | //statement/label
         | //statement/title
-        | //sub
-        | //sup
         | //table
+        | //table/thead
+        | //table/tbody
+        | //table/tfoot
+        | //table//tr
+        | //table//th
+        | //table//td
         | //table-wrap
         | //table-wrap/label
         | //table-wrap/caption
         | //table-wrap-group
         | //table-wrap-group/label
         | //table-wrap-group/caption
+        | //sub
+        | //sup
         | //xref
         """
     nodes = body[xpath]
     for node in nodes
         node.name == "label"
     end
-    dict = Dict(n => n for n in body[xpath])
+    dict = Dict(n => n for n in nodes)
     dict[body] = body
     tree = convert(Tree, body, dict)
     tree
@@ -170,39 +183,25 @@ function merge(tree::Tree)
     end
 end
 
-const jsondict = Dict(t => t for t in [
-    "article-title",
-    "prefix",
-    "given-names",
-    "surname",
-    "suffix",
-    "abstract",
-    "boxed-text",
-    "label",
-    "caption",
-    "code",
-    "def-list",
-    "title",
-    "disp-formula",
-    "fig",
-    "fig-group",
-    "list",
-    "list-item",
-    "p",
-    "sec"
-    "statement",
-    "table",
-    "table-wrap",
-    "table-wrap-group",
-    ]
-)
+function postprocess!(tree::Tree)
+    # merge <label> with <title>
+    for i = 2:length(tree)
+        if tree[i-1].name == "label" && tree[i].name == "title"
+            prepend!(tree[i], tree[i-1].children)
+            deleteat!(tree, i-1)
+        end
+    end
+end
 
 function jsonize!(tree::Tree)
-    if haskey(jsondict, tree.name)
-        setchildren!(tree, Tree(string(tree)))
-    else
+    n = count(isempty, tree.children)
+    if n > 0
+        strs = String[]
         for c in tree.children
-            jsonize!(c)
+            push!(strs, string(c))
         end
+        setchildren!(tree, Tree(join(strs)))
+    else
+        foreach(jsonize!, tree.children)
     end
 end
