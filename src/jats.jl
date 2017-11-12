@@ -44,7 +44,6 @@ function Base.convert(::Type{Tree}, etree::ETree, dict::Dict)
     for e in etree.elements
         if isa(e, String)
             ismatch(r"^\s*$",e) && continue
-            haskey(dict,etree) || continue
             if isempty(t) || !isempty(t[end])
                 push!(t, Tree(e))
             else
@@ -59,9 +58,6 @@ function Base.convert(::Type{Tree}, etree::ETree, dict::Dict)
 end
 
 function parse_front(front::ETree)
-    #articletitle = front["article-meta/title-group/article-title"]
-    #articletitle = isempty(articletitle) ? Tree("title") : parse_body(articletitle[1])
-    #push!(tree, articletitle)
     xpath = """
         journal-meta/journal-title-group/journal-title
         | article-meta/title-group/article-title
@@ -73,16 +69,25 @@ function parse_front(front::ETree)
 
     contrib = "article-meta/contrib-group/contrib[@contrib-type=\"author\"]"
     xpath = """
-        $contrib
-        | $contrib/name/prefix
-        | $contrib/name/given-names
-        | $contrib/name/surname
-        | $contrib/name/suffix
+        name/prefix
+        | name/given-names
+        | name/surname
+        | name/suffix
         """
-    dict = Dict(n => n for n in front[xpath])
-    authors = convert(Tree, front, dict).children
-    foreach(x -> x.name = "author", authors)
-    append!(tree, authors)
+    for node in front["article-meta/contrib-group/contrib[@contrib-type=\"author\"]"]
+        author = Tree("author")
+        push!(tree, author)
+        for item in ["prefix","given-names","surname","suffix"]
+            str = node["string(name/$item)"]
+            t = Tree(item, Tree(str))
+            isempty(str) || push!(author,t)
+        end
+    end
+
+    #dict = Dict(n => n for n in front[xpath])
+    #authors = convert(Tree, front, dict).children
+    #foreach(x -> x.name = "author", authors)
+    #append!(tree, authors)
     tree
 end
 
