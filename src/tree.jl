@@ -10,6 +10,7 @@ end
 function Tree(name, children::Vector{Tree})
     t = Tree(name, children, nothing)
     for c in children
+        delete!(c)
         c.parent = t
     end
     t

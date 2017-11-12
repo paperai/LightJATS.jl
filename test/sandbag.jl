@@ -6,7 +6,7 @@ function test()
     path = joinpath(dirname(@__FILE__), "../.data/journal.pone.0170111")
     #path = "C:/Users/hshindo/Desktop/PMC500/PMC5000010"
     tree = readjats("$path.xml")
-    open("C:/Users/hshindo/Desktop/temp/a.xml","w") do f
+    open("$(dirname(path))/b.xml","w") do f
         println(f, toxml(tree))
     end
     return

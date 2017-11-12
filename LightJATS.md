@@ -1,18 +1,19 @@
 # LightJATS Specification
 
 * [article](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ja30.html)
-    * front
+    * [front](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-j6s0.html)
+        * [journal-title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-cvf0.html)
         * [article-title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-e630.html)
+        * [year](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-vwc2.html)
+        * [abstract](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ba20.html)
+        * pdf-link
+        * xml-link
         * ~~[contrib[@contrib-type="author"]](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-n3w0.html)~~ → rename to `author`
             * [prefix](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-jxr0.html)
             * [given-names](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-fwt0.html)
             * [surname](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sg90.html)
             * [suffix](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-djb0.html)
-        * year
-        * book-title
-        * url
-        * [abstract](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ba20.html)
-    * body
+    * [body](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-jn50.html)
         * [def-list](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-4hx0.html)
             * ~~[label](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sqf0.html)~~ → merge with `title`
             * [title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7fz0.html)
@@ -41,7 +42,7 @@
         * [sub](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-9zq0.html)
         * [sup](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-5zb0.html)
         * [xref](https://jats.nlm.nih.gov/archiving/tag-library/0.4/n-gnb0.html)
-    * back
+    * [back](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-2450.html)
         * [ref-list](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-g2i0.html)
             * ~~[label](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sqf0.html)~~ → merge with `title`
             * [title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7fz0.html)
@@ -64,7 +65,7 @@
                     * source
                     * edition
                     * volume
-    * floats-group
+    * [floats-group](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-44s0.html)
         * [boxed-text](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-i950.html)
             * [label](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sqf0.html)
             * [caption](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-d580.html)

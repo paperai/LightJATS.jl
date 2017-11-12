@@ -13,12 +13,12 @@ function readjats(path::String)
         article = Tree("article")
         front = xml["front"][1]
         push!(article, parse_front(front))
-        push!(article[1], Tree("booktitle",Tree("ACL")))
-        push!(article[1], Tree("year",Tree("2017")))
-        push!(article[1], Tree("url",Tree("http://www.aclweb.org/anthology/P12-1046")))
+        push!(article[end], Tree("pdf-link",Tree("http://www.aclweb.org/anthology/P12-1046")))
+        push!(article[end], Tree("xml-link",Tree("http://example.xml")))
 
         body = xml["body"][1]
-        append!(article, parse_body(body).children)
+        push!(article, parse_body(body))
+
         push!(article, Tree("floats-group"))
         append!(article[end], findfloats(article))
         floats = xml["floats-group"]
@@ -59,28 +59,30 @@ function Base.convert(::Type{Tree}, etree::ETree, dict::Dict)
 end
 
 function parse_front(front::ETree)
-    tree = Tree(front.name)
-
-    title = front["article-meta/title-group/article-title"]
-    title = isempty(title) ? Tree("title") : parse_body(title[1])
-    push!(tree, title)
-
-    p = "article-meta/contrib-group/contrib[@contrib-type=\"author\"]"
+    #articletitle = front["article-meta/title-group/article-title"]
+    #articletitle = isempty(articletitle) ? Tree("title") : parse_body(articletitle[1])
+    #push!(tree, articletitle)
     xpath = """
-        $p
-        | $p/name/prefix
-        | $p/name/given-names
-        | $p/name/surname
-        | $p/name/suffix
+        journal-meta/journal-title-group/journal-title
+        | article-meta/title-group/article-title
+        | article-meta/pub-date[1]/year
+        | article-meta/abstract
+        """
+    trees = map(parse_body, front[xpath])
+    tree = Tree(front.name, trees)
+
+    contrib = "article-meta/contrib-group/contrib[@contrib-type=\"author\"]"
+    xpath = """
+        $contrib
+        | $contrib/name/prefix
+        | $contrib/name/given-names
+        | $contrib/name/surname
+        | $contrib/name/suffix
         """
     dict = Dict(n => n for n in front[xpath])
-    t = convert(Tree, front, dict)
-    foreach(c -> c.name = "author", t.children)
-    append!(tree, t.children)
-
-    abst = front["article-meta/abstract"]
-    abst = isempty(abst) ? Tree("abstract") : parse_body(abst[1])
-    push!(tree, abst)
+    authors = convert(Tree, front, dict).children
+    foreach(x -> x.name = "author", authors)
+    append!(tree, authors)
     tree
 end
 
