@@ -2,9 +2,11 @@ workspace()
 using LibExpat
 using LightJATS
 
+LightJATS.createsample("D:/PMC500")
+
 function test()
     path = joinpath(dirname(@__FILE__), "../.data/journal.pone.0170111")
-    #path = "C:/Users/hshindo/Desktop/PMC500/PMC5000010"
+    path = "D:/PMC500/PMC5000546"
     tree = readjats("$path.xml")
     open("$(dirname(path))/b.xml","w") do f
         println(f, toxml(tree))
@@ -14,20 +16,20 @@ function test()
     align("$path.pdf", "$path.xml")
     #write("s.out", pdf)
 end
-t = test()
+#t = test()
 
 function test1()
-    root = "C:/Users/hshindo/Desktop/PMC500"
+    root = "D:/PMC500"
     for dir in readdir(root)
         endswith(dir,".xml") || continue
         println(dir)
         path = joinpath(root, dir)
         tree = readjats(path)
         xml = toxml(tree)
-        open("C:/Users/hshindo/Desktop/temp/$dir","w") do f
+        open("D:/sample_xml3/$dir","w") do f
             println(f, xml)
         end
-        return
+        #return
     end
 end
 test1()

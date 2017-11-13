@@ -26,8 +26,9 @@ function readjats(path::String)
             append!(article[end], parse_body(floats[1]).children)
         end
 
+        deleteat!(article, length(article))
         postprocess!(article)
-        #jsonize!(article)
+        jsonize!(article)
         return article
     catch e
         if isa(e, UnsupportedException)
@@ -40,21 +41,47 @@ function readjats(path::String)
 end
 
 function Base.convert(::Type{Tree}, etree::ETree, dict::Dict)
-    t = Tree(etree.name, Tree[])
-    for e in etree.elements
-        if isa(e, String)
-            ismatch(r"^\s*$",e) && continue
-            if isempty(t) || !isempty(t[end])
-                push!(t, Tree(e))
-            else
-                t[end].name *= e
-            end
+    elements = filter(e -> isa(e,ETree) || !ismatch(r"^\s*$",e), etree.elements) |> collect
+    temp = map(elements) do e
+        isa(e,String) ? Tree(e) : convert(Tree,e,dict)
+    end
+    deletable = begin
+        if any(e -> isa(e,String), elements)
+            false
+        elseif any(e -> haskey(dict,e), elements)
+            true
+        elseif any(x -> any(!isempty,x.children), temp)
+            true
         else
-            c = convert(Tree, e, dict)
-            haskey(dict,e) ? push!(t,c) : append!(t,c.children)
+            false
         end
     end
-    t
+
+    children = Tree[]
+    for i = 1:length(elements)
+        e = elements[i]
+        t = temp[i]
+        if isa(e,String) || haskey(dict,e)
+            if isempty(children)
+                push!(children, t)
+            elseif isempty(t) && isempty(children[end])
+                children[end].name *= t.name
+            else
+                push!(children, t)
+            end
+        elseif any(!isempty, t.children) || !deletable
+            for c in t.children
+                if isempty(children)
+                    push!(children, c)
+                elseif isempty(c) && isempty(children[end])
+                    children[end].name *= c.name
+                else
+                    push!(children, c)
+                end
+            end
+        end
+    end
+    Tree(etree.name, children)
 end
 
 function parse_front(front::ETree)
@@ -64,30 +91,20 @@ function parse_front(front::ETree)
         | article-meta/pub-date[1]/year
         | article-meta/abstract
         """
-    trees = map(parse_body, front[xpath])
-    tree = Tree(front.name, trees)
+    tree = Tree(front.name, map(parse_body,front[xpath]))
 
     contrib = "article-meta/contrib-group/contrib[@contrib-type=\"author\"]"
     xpath = """
-        name/prefix
-        | name/given-names
-        | name/surname
-        | name/suffix
+        $contrib
+        | $contrib/name/prefix
+        | $contrib/name/given-names
+        | $contrib/name/surname
+        | $contrib/name/suffix
         """
-    for node in front["article-meta/contrib-group/contrib[@contrib-type=\"author\"]"]
-        author = Tree("author")
-        push!(tree, author)
-        for item in ["prefix","given-names","surname","suffix"]
-            str = node["string(name/$item)"]
-            t = Tree(item, Tree(str))
-            isempty(str) || push!(author,t)
-        end
-    end
-
-    #dict = Dict(n => n for n in front[xpath])
-    #authors = convert(Tree, front, dict).children
-    #foreach(x -> x.name = "author", authors)
-    #append!(tree, authors)
+    dict = Dict(n => n for n in front[xpath])
+    authors = convert(Tree, front, dict).children
+    foreach(a -> a.name = "author", authors)
+    append!(tree, authors)
     tree
 end
 
@@ -147,10 +164,8 @@ function parse_body(body::ETree)
         | //table-wrap-group/caption/title
         | //sub
         | //sup
-        | //xref
         """
     dict = Dict(n => n for n in body[xpath])
-    dict[body] = body
     tree = convert(Tree, body, dict)
     tree
 end
@@ -188,7 +203,7 @@ function parse_back(back::ETree)
 end
 
 function findfloats(tree::Tree)
-    floatset = Set(["boxed-text","code","fig","fig-group","table-wrap","table-wrap-group"])
+    floatset = Set(["boxed-text","code","fig","fig-group","table-wrap","table-wrap-group","disp-formula"])
     floats = Tree[]
     topdown_while(tree) do t
         if t.name in floatset
@@ -203,10 +218,10 @@ end
 
 function postprocess!(tree::Tree)
     # merge <label> with <title>
-    for i = 2:length(tree)
-        if tree[i-1].name == "label" && tree[i].name == "title"
-            prepend!(tree[i], tree[i-1].children)
-            deleteat!(tree, i-1)
+    for i = length(tree)-1:-1:1
+        if tree[i].name == "label" && tree[i+1].name == "title"
+            prepend!(tree[i+1], tree[i].children)
+            deleteat!(tree, i)
         end
     end
     foreach(postprocess!, tree.children)
@@ -217,10 +232,34 @@ function jsonize!(tree::Tree)
     if n > 0
         strs = String[]
         for c in tree.children
-            push!(strs, string(c))
+            if isempty(c)
+                push!(strs, c.name)
+            else
+                push!(strs, "[$(c.name)]")
+            end
         end
-        setchildren!(tree, Tree(join(strs)))
+        setchildren!(tree, Tree(join(strs," ")))
     else
         foreach(jsonize!, tree.children)
+    end
+end
+
+function createsample(rootpath::String)
+    jarfile = realpath(joinpath(dirname(@__FILE__),"pdfextract-0.1.3.jar"))
+    for file in readdir(rootpath)
+        endswith(file,".xml") || continue
+        println(file)
+        xmlpath = joinpath(rootpath, file)
+        tree = readjats(xmlpath)
+        filename = splitext(file)[1]
+        dir = "D:/sample_xml3/$filename"
+        isdir(dir) || mkdir(dir)
+        open("$dir/$file","w") do f
+            println(f, toxml(tree))
+        end
+
+        pdfpath = joinpath(rootpath, "$filename.pdf")
+        run(`java -classpath $jarfile ImageExtractor $pdfpath -dpi 72`)
+        #return
     end
 end

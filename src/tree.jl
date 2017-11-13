@@ -9,7 +9,8 @@ end
 
 function Tree(name, children::Vector{Tree})
     t = Tree(name, children, nothing)
-    for c in children
+    for i = length(children):-1:1
+        c = children[i]
         delete!(c)
         c.parent = t
     end
@@ -32,16 +33,18 @@ Base.size(tree::Tree, i::Int) = size(tree.children, i)
 Base.endof(tree::Tree) = endof(tree.children)
 function Base.push!(tree::Tree, children::Tree...)
     push!(tree.children, children...)
-    for c in children
+    for i = length(children):-1:1
+        c = children[i]
         delete!(c)
         c.parent = tree
     end
 end
 Base.append!(tree::Tree, children) = push!(tree, children...)
 
-function Base.prepend!(tree::Tree, children)
+function Base.prepend!(tree::Tree, children::Vector)
     prepend!(tree.children, children)
-    for c in children
+    for i = length(children):-1:1
+        c = children[i]
         delete!(c)
         c.parent = tree
     end
@@ -59,7 +62,6 @@ function Base.delete!(tree::Tree)
     tree.parent == nothing && return
     i = findfirst(x -> x == tree, tree.parent.children)
     deleteat!(tree.parent, i)
-    tree.parent = nothing
 end
 function removeat!(tree::Tree, i::Int)
     children = Tree[]
