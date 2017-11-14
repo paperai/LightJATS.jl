@@ -10,6 +10,11 @@ function readjats(path::String)
     try
         xml = xp_parse(open(readstring,path))
         @assert xml.name == "article"
+        if length(xml.elements) < 3
+            warn("#xml elements < 3")
+            return
+        end
+
         article = Tree("article")
         front = xml["front"][1]
         push!(article, parse_front(front))
@@ -26,11 +31,6 @@ function readjats(path::String)
             append!(article[end], parse_body(floats[1]).children)
         end
 
-        # temporary
-        deleteat!(article, 2)
-        find(n -> n.name == "fig", article)
-
-        #deleteat!(article, length(article))
         postprocess!(article)
         jsonize!(article)
         return article
@@ -248,20 +248,42 @@ function jsonize!(tree::Tree)
     end
 end
 
-function createsample(rootpath::String)
+function create_sample(rootpath::String)
     for file in readdir(rootpath)
         endswith(file,".xml") || continue
         println(file)
         xmlpath = joinpath(rootpath, file)
         tree = readjats(xmlpath)
+
+        # remove non-figure floats
+        floatset = Set(["fig","fig-group"])
+        floats = Tree[]
+        topdown_while(tree) do t
+            if t.name in floatset
+                push!(floats, t)
+                false
+            else
+                true
+            end
+        end
+        deleteat!(tree, 2)
+        setchildren!(tree[end], floats)
+        count = 1
+        for node in floats
+            node.name == "fig" || continue
+            imgname = "$(file[1:end-4])_$count.png"
+            node.name = "fig img=\"$imgname\""
+            count += 1
+        end
+
         filename = splitext(file)[1]
-        dir = "D:/sample_xml3/$filename"
+        dir = "C:/Users/hshindo/Documents/sample_xml4/$filename"
         isdir(dir) || mkdir(dir)
         open("$dir/$file","w") do f
             println(f, toxml(tree))
         end
 
         pdfpath = joinpath(rootpath, "$filename.pdf")
-        saveimages(pdfpath, dir)
+        extract_images(pdfpath, o=dir, dpi=200)
     end
 end

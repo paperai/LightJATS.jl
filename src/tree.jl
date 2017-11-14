@@ -142,15 +142,15 @@ function toxml(tree::Tree)
 
     strs = String[]
     isa(tree.parent,Void) && push!(strs,"<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
-    name = escape(tree.name)
     if isempty(tree)
-        push!(strs, name)
+        push!(strs, escape(tree.name))
     else
-        push!(strs, "<$name>")
+        push!(strs, "<$(tree.name)>")
         for c in tree.children
             push!(strs, toxml(c))
         end
-        push!(strs, "</$name>")
+        closetag = split(tree.name, " ")[1]
+        push!(strs, "</$closetag>")
     end
     join(strs, "\n")
 end

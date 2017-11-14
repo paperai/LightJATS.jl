@@ -2,7 +2,8 @@ workspace()
 using LibExpat
 using LightJATS
 
-LightJATS.createsample("D:/PMC500")
+LightJATS.create_sample("C:/Users/hshindo/Desktop/PMC500")
+LightJATS.create_sample("C:/Users/hshindo/Dropbox/temp/plosone_sample/070")
 
 function test()
     path = joinpath(dirname(@__FILE__), "../.data/journal.pone.0170111")
