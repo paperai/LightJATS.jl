@@ -26,7 +26,11 @@ function readjats(path::String)
             append!(article[end], parse_body(floats[1]).children)
         end
 
-        deleteat!(article, length(article))
+        # temporary
+        deleteat!(article, 2)
+        find(n -> n.name == "fig", article)
+
+        #deleteat!(article, length(article))
         postprocess!(article)
         jsonize!(article)
         return article
@@ -245,7 +249,6 @@ function jsonize!(tree::Tree)
 end
 
 function createsample(rootpath::String)
-    jarfile = realpath(joinpath(dirname(@__FILE__),"pdfextract-0.1.3.jar"))
     for file in readdir(rootpath)
         endswith(file,".xml") || continue
         println(file)
@@ -259,7 +262,6 @@ function createsample(rootpath::String)
         end
 
         pdfpath = joinpath(rootpath, "$filename.pdf")
-        run(`java -classpath $jarfile ImageExtractor $pdfpath -dpi 72`)
-        #return
+        saveimages(pdfpath, dir)
     end
 end

@@ -1,6 +1,6 @@
 module LightJATS
 
-#using PDFExtract
+using PDFExtract
 
 include("tree.jl")
 include("jats.jl")
