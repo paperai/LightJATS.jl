@@ -22,6 +22,12 @@ Tree(name) = Tree(name, Tree[])
 isroot(tree::Tree) = isa(tree.parent, Void)
 
 Base.getindex(tree::Tree, key::Int) = tree.children[key]
+function Base.getindex(tree::Tree, key::String)
+    for c in tree.children
+        c.name == key && return c
+    end
+    throw("$key is not found.")
+end
 
 function Base.setindex!(tree::Tree, value::Tree, key::Int)
     tree.children[key] = value
@@ -31,6 +37,7 @@ Base.isempty(tree::Tree) = isempty(tree.children)
 Base.length(tree::Tree) = length(tree.children)
 Base.size(tree::Tree, i::Int) = size(tree.children, i)
 Base.endof(tree::Tree) = endof(tree.children)
+
 function Base.push!(tree::Tree, children::Tree...)
     push!(tree.children, children...)
     for i = length(children):-1:1
@@ -40,7 +47,6 @@ function Base.push!(tree::Tree, children::Tree...)
     end
 end
 Base.append!(tree::Tree, children) = push!(tree, children...)
-
 function Base.prepend!(tree::Tree, children::Vector)
     prepend!(tree.children, children)
     for i = length(children):-1:1
@@ -49,11 +55,11 @@ function Base.prepend!(tree::Tree, children::Vector)
         c.parent = tree
     end
 end
-
 function Base.insert!(tree::Tree, i::Int, child::Tree)
     insert!(tree.children, i, child)
     child.parent = tree
 end
+
 function Base.deleteat!(tree::Tree, i::Int)
     tree[i].parent = nothing
     deleteat!(tree.children, i)
@@ -62,6 +68,12 @@ function Base.delete!(tree::Tree)
     tree.parent == nothing && return
     i = findfirst(x -> x == tree, tree.parent.children)
     deleteat!(tree.parent, i)
+end
+function Base.delete!(tree::Tree, key::String)
+    inds = find(c -> c.name == key, tree.children)
+    for i = length(inds):-1:1
+        deleteat!(tree, inds[i])
+    end
 end
 function removeat!(tree::Tree, i::Int)
     children = Tree[]
@@ -79,7 +91,8 @@ function Base.empty!(tree::Tree)
     foreach(c -> c.parent = nothing, tree.children)
     empty!(tree.children)
 end
-function Base.find(f::Function, tree::Tree)
+
+function find2(f::Function, tree::Tree)
     nodes = Tree[]
     function traverse(node::Tree)
         f(node) && push!(nodes,node)

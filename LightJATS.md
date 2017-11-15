@@ -13,6 +13,7 @@
             * [given-names](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-fwt0.html)
             * [surname](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sg90.html)
             * [suffix](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-djb0.html)
+            * [collab](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-xz80.html)
     * [body](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-jn50.html)
         * [def-list](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-4hx0.html)
             * ~~[label](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sqf0.html)~~ → merge with `title`

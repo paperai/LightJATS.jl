@@ -30,6 +30,7 @@ function readjats(path::String)
         if !isempty(floats)
             append!(article[end], parse_body(floats[1]).children)
         end
+        isempty(article[end]) && deleteat!(article,length(article)) # no floats
 
         postprocess!(article)
         jsonize!(article)
@@ -104,6 +105,7 @@ function parse_front(front::ETree)
         | $contrib/name/given-names
         | $contrib/name/surname
         | $contrib/name/suffix
+        | $contrib/collab
         """
     dict = Dict(n => n for n in front[xpath])
     authors = convert(Tree, front, dict).children
@@ -252,38 +254,42 @@ function create_sample(rootpath::String)
     for file in readdir(rootpath)
         endswith(file,".xml") || continue
         println(file)
+        filename = splitext(file)[1]
         xmlpath = joinpath(rootpath, file)
+        pdfpath = joinpath(rootpath, "$filename.pdf")
+        isfile(pdfpath) || continue
+
         tree = readjats(xmlpath)
+        delete!(tree["body"])
 
         # remove non-figure floats
-        floatset = Set(["fig","fig-group"])
-        floats = Tree[]
-        topdown_while(tree) do t
-            if t.name in floatset
-                push!(floats, t)
-                false
-            else
-                true
+        if tree[end].name == "floats-group"
+            floatset = Set(["fig","fig-group"])
+            floats = Tree[]
+            topdown_while(tree[end]) do t
+                if t.name in floatset
+                    push!(floats, t)
+                    false
+                else
+                    true
+                end
+            end
+            setchildren!(tree[end], floats)
+
+            count = 1
+            for node in floats
+                node.name == "fig" || continue
+                imgname = "$(file[1:end-4])_$count.png"
+                node.name = "fig img=\"$imgname\""
+                count += 1
             end
         end
-        deleteat!(tree, 2)
-        setchildren!(tree[end], floats)
-        count = 1
-        for node in floats
-            node.name == "fig" || continue
-            imgname = "$(file[1:end-4])_$count.png"
-            node.name = "fig img=\"$imgname\""
-            count += 1
-        end
 
-        filename = splitext(file)[1]
-        dir = "C:/Users/hshindo/Documents/sample_xml4/$filename"
+        dir = "C:/Users/hshindo/Documents/sample_xml4-1/$filename"
         isdir(dir) || mkdir(dir)
         open("$dir/$file","w") do f
             println(f, toxml(tree))
         end
-
-        pdfpath = joinpath(rootpath, "$filename.pdf")
         extract_images(pdfpath, o=dir, dpi=200)
     end
 end
