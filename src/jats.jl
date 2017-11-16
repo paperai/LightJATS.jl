@@ -1,6 +1,6 @@
 export readjats
 
-using LibExpat
+using EzXML
 
 struct UnsupportedException <: Exception
     message::String
@@ -8,25 +8,25 @@ end
 
 function readjats(path::String)
     try
-        xml = xp_parse(open(readstring,path))
-        @assert xml.name == "article"
-        if length(xml.elements) < 3
+        xml_article = root(readxml(path))
+        @assert nodename(xml_article) == "article"
+        if countelements(xml_article) < 3
             warn("#xml elements < 3")
             return
         end
 
         article = Tree("article")
-        front = xml["front"][1]
-        push!(article, parse_front(front))
+        xml_front = findfirst(xml_article, "front")
+        push!(article, parse_front(xml_front))
         push!(article[end], Tree("pdf-link",Tree("http://www.aclweb.org/anthology/P12-1046")))
         push!(article[end], Tree("xml-link",Tree("http://example.xml")))
 
-        body = xml["body"][1]
+        body = findfirst(xml_article, "body")
         push!(article, parse_body(body))
 
         push!(article, Tree("floats-group"))
         append!(article[end], findfloats(article))
-        floats = xml["floats-group"]
+        floats = find(xml_article, "floats-group")
         if !isempty(floats)
             append!(article[end], parse_body(floats[1]).children)
         end
@@ -45,17 +45,21 @@ function readjats(path::String)
     end
 end
 
-function Base.convert(::Type{Tree}, etree::ETree, dict::Dict)
-    elements = filter(e -> isa(e,ETree) || !ismatch(r"^\s*$",e), etree.elements) |> collect
-    temp = map(elements) do e
-        isa(e,String) ? Tree(e) : convert(Tree,e,dict)
+function Base.convert(::Type{Tree}, enode::EzXML.Node, dict::Dict)
+    elements = filter(nodes(enode)) do n
+        iselement(n) && return true
+        istext(n) && !ismatch(r"^\s*$",nodecontent(n))
+    end
+    elements = collect(elements)
+    tempnodes = map(elements) do e
+        istext(e) ? Tree(nodecontent(e)) : convert(Tree,e,dict)
     end
     deletable = begin
-        if any(e -> isa(e,String), elements)
+        if any(istext, elements)
             false
         elseif any(e -> haskey(dict,e), elements)
             true
-        elseif any(x -> any(!isempty,x.children), temp)
+        elseif any(n -> any(!isempty,n.children), tempnodes)
             true
         else
             false
@@ -65,8 +69,8 @@ function Base.convert(::Type{Tree}, etree::ETree, dict::Dict)
     children = Tree[]
     for i = 1:length(elements)
         e = elements[i]
-        t = temp[i]
-        if isa(e,String) || haskey(dict,e)
+        t = tempnodes[i]
+        if istext(e) || haskey(dict,e)
             if isempty(children)
                 push!(children, t)
             elseif isempty(t) && isempty(children[end])
@@ -86,17 +90,17 @@ function Base.convert(::Type{Tree}, etree::ETree, dict::Dict)
             end
         end
     end
-    Tree(etree.name, children)
+    Tree(nodename(enode), children)
 end
 
-function parse_front(front::ETree)
+function parse_front(front::EzXML.Node)
     xpath = """
         journal-meta/journal-title-group/journal-title
         | article-meta/title-group/article-title
         | article-meta/pub-date[1]/year
         | article-meta/abstract
         """
-    tree = Tree(front.name, map(parse_body,front[xpath]))
+    tree = Tree(nodename(front), map(parse_body,find(front,xpath)))
 
     contrib = "article-meta/contrib-group/contrib[@contrib-type=\"author\"]"
     xpath = """
@@ -107,14 +111,14 @@ function parse_front(front::ETree)
         | $contrib/name/suffix
         | $contrib/collab
         """
-    dict = Dict(n => n for n in front[xpath])
+    dict = Dict(n => n for n in find(front,xpath))
     authors = convert(Tree, front, dict).children
     foreach(a -> a.name = "author", authors)
     append!(tree, authors)
     tree
 end
 
-function parse_body(body::ETree)
+function parse_body(body::EzXML.Node)
     xpath = """
         //boxed-text
         | //boxed-text/label
@@ -171,16 +175,16 @@ function parse_body(body::ETree)
         | //sub
         | //sup
         """
-    dict = Dict(n => n for n in body[xpath])
-    tree = convert(Tree, body, dict)
-    tree
+    dict = Dict(n => n for n in find(body,xpath))
+    convert(Tree, body, dict)
 end
 
-function parse_back(back::ETree)
-    tree = Tree(back.name)
-    for node in back["//element-citation | //mixed-citation"]
-        node.name = "citation"
-    end
+function parse_back(back::EzXML.Node)
+    tree = Tree(nodename(back))
+    #for node in find(back,"//element-citation | //mixed-citation")
+    #    node.name = "citation"
+    #end
+    citation = "ref-list/ref/citation"
     xpath = """
         ref-list
         | ref-list/label
