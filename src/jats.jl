@@ -32,8 +32,16 @@ function readjats(path::String)
         end
         isempty(article[end]) && deleteat!(article,length(article)) # no floats
 
+        maths = findall(article, "math")
+        for i = 1:length(maths)
+            math = maths[i]
+            mathml = root(parsexml(toxml(math)))
+            normalize_mathml!(mathml)
+            replace!(math, convert(Tree,mathml))
+        end
+
         postprocess!(article)
-        jsonize!(article)
+        #jsonize!(article)
         return article
     catch e
         if isa(e, UnsupportedException)
@@ -45,7 +53,7 @@ function readjats(path::String)
     end
 end
 
-function Base.convert(::Type{Tree}, enode::EzXML.Node, dict::Dict)
+function Base.convert(::Type{Tree}, enode::EzXML.Node, dict=nothing)
     elements = filter(nodes(enode)) do n
         iselement(n) && return true
         istext(n) && !ismatch(r"^\s*$",nodecontent(n))
@@ -57,7 +65,7 @@ function Base.convert(::Type{Tree}, enode::EzXML.Node, dict::Dict)
     deletable = begin
         if any(istext, elements)
             false
-        elseif any(e -> haskey(dict,e), elements)
+        elseif dict == nothing || any(e -> haskey(dict,e), elements)
             true
         elseif any(n -> any(!isempty,n.children), tempnodes)
             true
@@ -70,7 +78,7 @@ function Base.convert(::Type{Tree}, enode::EzXML.Node, dict::Dict)
     for i = 1:length(elements)
         e = elements[i]
         t = tempnodes[i]
-        if istext(e) || haskey(dict,e)
+        if istext(e) || dict == nothing || haskey(dict,e)
             if isempty(children)
                 push!(children, t)
             elseif isempty(t) && isempty(children[end])
@@ -213,7 +221,7 @@ function parse_back(back::EzXML.Node)
 end
 
 function findfloats(tree::Tree)
-    floatset = Set(["boxed-text","code","fig","fig-group","table-wrap","table-wrap-group","disp-formula"])
+    floatset = Set(["boxed-text","code","fig","fig-group","table-wrap","table-wrap-group"])
     floats = Tree[]
     topdown_while(tree) do t
         if t.name in floatset
@@ -295,5 +303,31 @@ function create_sample(rootpath::String)
             println(f, toxml(tree))
         end
         extract_images(pdfpath, o=dir, dpi=200)
+    end
+end
+
+function normalize_mathml!(mathml::EzXML.Node)
+    # replace <mn>, <mo>, <mtext>, <ms> with <mi>
+    for node in find(mathml, "//mn | //mo | //mtext | //ms")
+        if nodename(node) == "ms"
+            setnodecontent!(node, "\"$(nodecontent(node))\"")
+        end
+        setnodename!(node, "mi")
+    end
+    # <mi>sin</mi> -> <mi>s</mi><mi>i</mi><mi>n</mi>
+    for node in find(mathml, "//mi")
+        chars = Vector{Char}(nodecontent(node))
+        length(chars) == 1 && continue
+        setnodecontent!(node, string(chars[1]))
+        target = node
+        for i = 2:length(chars)
+            mi = ElementNode("mi")
+            link!(mi, TextNode(string(chars[i])))
+            linknext!(target, mi)
+            target = mi
+        end
+    end
+    for node in find(mathml, "//text()")
+        
     end
 end

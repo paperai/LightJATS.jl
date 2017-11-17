@@ -1,5 +1,5 @@
 export Tree
-export topdown, topdown_while, toxml, tosexpr
+export findall, topdown, topdown_while, toxml, tosexpr
 
 mutable struct Tree
     name
@@ -92,7 +92,7 @@ function Base.empty!(tree::Tree)
     empty!(tree.children)
 end
 
-function find2(f::Function, tree::Tree)
+function findall(f::Function, tree::Tree)
     nodes = Tree[]
     function traverse(node::Tree)
         f(node) && push!(nodes,node)
@@ -102,6 +102,14 @@ function find2(f::Function, tree::Tree)
     end
     traverse(tree)
     nodes
+end
+findall(tree::Tree, name::String) = findall(x -> x.name == name, tree)
+
+function replace!(oldt::Tree, newt::Tree)
+    p = oldt.parent
+    i = findfirst(x -> x == oldt, p.children)
+    deleteat!(p, i)
+    insert!(p, i, newt)
 end
 
 function setchildren!(tree::Tree, children::Vector{Tree})
@@ -153,19 +161,23 @@ function toxml(tree::Tree)
         str
     end
 
+    @assert !isempty(tree)
     strs = String[]
-    isa(tree.parent,Void) && push!(strs,"<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
-    if isempty(tree)
-        push!(strs, escape(tree.name))
-    else
-        push!(strs, "<$(tree.name)>")
-        for c in tree.children
+    tree.parent == nothing && push!(strs,"<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
+
+    push!(strs, "<$(tree.name)>")
+    for c in tree.children
+        if isempty(c)
+            push!(strs, escape(c.name))
+        else
+            !isempty(strs) && strs[end][end] == '>' && push!(strs,"\n")
             push!(strs, toxml(c))
         end
-        closetag = split(tree.name, " ")[1]
-        push!(strs, "</$closetag>")
     end
-    join(strs, "\n")
+    closetag = split(tree.name, " ")[1]
+    strs[end][end] == '>' && push!(strs,"\n")
+    push!(strs, "</$closetag>")
+    join(strs)
 end
 
 function Base.string(tree::Tree)
