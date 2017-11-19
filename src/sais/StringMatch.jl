@@ -32,7 +32,7 @@ function lcsubstring(seq::Vector{Int}, m::Int)
         push!(commonlengths, len)
     end
     sort!(commonlengths, rev=true)
-
+    
 
 end
 
