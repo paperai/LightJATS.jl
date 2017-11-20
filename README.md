@@ -8,4 +8,16 @@ julia> Pkg.clone("https://github.com/paperai/LightJATS.jl.git")
 ```
 
 ## Functions
-* `convertjats(path::String)`: convert JATS to LightJATS
+* `readjats(path::String)::LightJATS.Tree`: Read JATS file and convert it to LightJATS tree.
+* `toxml(tree::LightJATS.Tree)`: Convert tree to xml.
+
+### Example
+```julia
+using LightJATS
+
+tree = readjats("C:/xxx.xml")
+xml = toxml(tree)
+open("C:/out.xml","w") do f
+    println(f, xml)
+end
+```

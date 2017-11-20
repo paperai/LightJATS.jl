@@ -18,11 +18,16 @@ function readjats(path::String)
         article = Tree("article")
         xml_front = findfirst(xml_article, "front")
         push!(article, parse_front(xml_front))
-        push!(article[end], Tree("pdf-link",Tree("http://www.aclweb.org/anthology/P12-1046")))
-        push!(article[end], Tree("xml-link",Tree("http://example.xml")))
+        #push!(article[end], Tree("pdf-link",Tree("http://www.aclweb.org/anthology/P12-1046")))
+        #push!(article[end], Tree("xml-link",Tree("http://example.xml")))
 
         body = findfirst(xml_article, "body")
         push!(article, parse_body(body))
+
+        back = find(xml_article, "back")
+        if !isempty(back)
+            push!(article, parse_back(back[1]))
+        end
 
         push!(article, Tree("floats-group"))
         append!(article[end], findfloats(article))
@@ -35,9 +40,9 @@ function readjats(path::String)
         maths = findall(article, "math")
         for i = 1:length(maths)
             math = maths[i]
-            mathml = root(parsexml(toxml(math)))
-            normalize_mathml!(mathml)
-            replace!(math, convert(Tree,mathml))
+            #mathml = root(parsexml(toxml(math)))
+            #normalize_mathml!(mathml)
+            #replace!(math, convert(Tree,mathml))
         end
 
         postprocess!(article)
@@ -189,10 +194,9 @@ end
 
 function parse_back(back::EzXML.Node)
     tree = Tree(nodename(back))
-    #for node in find(back,"//element-citation | //mixed-citation")
-    #    node.name = "citation"
-    #end
-    citation = "ref-list/ref/citation"
+    for node in find(back, ".//element-citation | .//mixed-citation")
+        setnodename!(node, "citation")
+    end
     xpath = """
         ref-list
         | ref-list/label
@@ -215,9 +219,8 @@ function parse_back(back::EzXML.Node)
         | ref-list/ref/citation/edition
         | ref-list/ref/citation/volume
         """
-    dict = Dict(n => n for n in back[xpath])
-    dict[etree] = etree
-    convert(Tree, etree, dict)
+    dict = Dict(n => n for n in find(back,xpath))
+    convert(Tree, back, dict)
 end
 
 function findfloats(tree::Tree)
@@ -328,6 +331,6 @@ function normalize_mathml!(mathml::EzXML.Node)
         end
     end
     for node in find(mathml, "//text()")
-        
+
     end
 end

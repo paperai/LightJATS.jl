@@ -1,4 +1,3 @@
-export Tree
 export findall, topdown, topdown_while, toxml, tosexpr
 
 mutable struct Tree
