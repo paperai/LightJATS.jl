@@ -15,11 +15,15 @@ function readjats(path::String)
             return
         end
 
+        images = readimages(replace(path,".xml",".pdf"))
+        graphics = find(xml_article, "//graphic | //inline-graphic")
+        length(images) == length(graphics) || warn("$(length(images)) vs $(length(graphics))")
+
         article = Tree("article")
         xml_front = findfirst(xml_article, "front")
         push!(article, parse_front(xml_front))
-        #push!(article[end], Tree("pdf-link",Tree("http://www.aclweb.org/anthology/P12-1046")))
-        #push!(article[end], Tree("xml-link",Tree("http://example.xml")))
+        push!(article[end], Tree("pdf-link",Tree("http://www.aclweb.org/anthology/P12-1046")))
+        push!(article[end], Tree("xml-link",Tree("http://example.xml")))
 
         body = findfirst(xml_article, "body")
         push!(article, parse_body(body))
@@ -46,7 +50,7 @@ function readjats(path::String)
         end
 
         postprocess!(article)
-        #jsonize!(article)
+        jsonize!(article)
         return article
     catch e
         if isa(e, UnsupportedException)
@@ -289,7 +293,7 @@ function create_sample(rootpath::String)
                     true
                 end
             end
-            setchildren!(tree[end], floats)
+            isempty(floats) ? delete!(tree[end]) : setchildren!(tree[end],floats)
 
             count = 1
             for node in floats
@@ -305,7 +309,7 @@ function create_sample(rootpath::String)
         open("$dir/$file","w") do f
             println(f, toxml(tree))
         end
-        extract_images(pdfpath, o=dir, dpi=200)
+        saveimages(pdfpath, options=["-o",dir,"-dpi","200"])
     end
 end
 
