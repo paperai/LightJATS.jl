@@ -15,9 +15,9 @@ function readjats(path::String)
             return
         end
 
-        images = readimages(replace(path,".xml",".pdf"))
-        graphics = find(xml_article, "//graphic | //inline-graphic")
-        length(images) == length(graphics) || warn("$(length(images)) vs $(length(graphics))")
+        #images = readimages(replace(path,".xml",".pdf"))
+        #graphics = find(xml_article, "//graphic | //inline-graphic")
+        #length(images) == length(graphics) || warn("$(length(images)) vs $(length(graphics))")
 
         article = Tree("article")
         xml_front = findfirst(xml_article, "front")
@@ -30,7 +30,7 @@ function readjats(path::String)
 
         back = find(xml_article, "back")
         if !isempty(back)
-            push!(article, parse_back(back[1]))
+            #push!(article, parse_back(back[1]))
         end
 
         push!(article, Tree("floats-group"))
@@ -44,13 +44,13 @@ function readjats(path::String)
         maths = findall(article, "math")
         for i = 1:length(maths)
             math = maths[i]
-            #mathml = root(parsexml(toxml(math)))
-            #normalize_mathml!(mathml)
-            #replace!(math, convert(Tree,mathml))
+            mathml = root(parsexml(toxml(math)))
+            normalize_mathml!(mathml)
+            replace!(math, convert(Tree,mathml))
         end
 
         postprocess!(article)
-        jsonize!(article)
+        # jsonize!(article)
         return article
     catch e
         if isa(e, UnsupportedException)
@@ -304,7 +304,7 @@ function create_sample(rootpath::String)
             end
         end
 
-        dir = "C:/Users/hshindo/Documents/sample_xml4-1/$filename"
+        dir = "C:/Users/hshindo/Documents/sample_xml4-2/$filename"
         isdir(dir) || mkdir(dir)
         open("$dir/$file","w") do f
             println(f, toxml(tree))

@@ -8,7 +8,7 @@ struct State
     j1::Int
     i2::Int
     j2::Int
-    leftmost::Bool # or rightmost
+    leftmost::Bool
 end
 
 isvalid(s::State) = s.i1 > 0 && s.i1 <= s.j1 && s.i2 > 0 && s.i2 <= s.j2
@@ -17,23 +17,91 @@ function match(seq1::Vector{Int}, seq2::Vector{Int})
     states = [State(1,length(t1),1,length(t2),true)]
     while !isempty(states)
         st = pop!(states)
-        newst = getlcs(t1[st.i1:st.j1], t2[st.i2:st.j2], st.isfirst)
+        newst = getlcs(t1[st.i1:st.j1], t2[st.i2:st.j2], st.leftmost)
 
     end
 end
 
-function lcsubstring(seq::Vector{Int}, m::Int)
+function lcsubstring(seq1::Vector{Int}, seq2::Vector{Int})
+    n1 = length(seq1)
+    seq = cat(1, seq1, seq2)
     sa = SuffixArray(seq)
-    commonlengths = NTuple{3,Int}[]
+
+    maxinds, maxlen = Int[], 0
     for i = 2:length(sa.lcparray)
         k1, k2 = sa[i-1], sa[i]
-        (k1 <= m) == (k2 <= m) && continue
-        len = min(sa.lcparray[i], m-min(k1,k2)+1)
-        push!(commonlengths, len)
+        (k1 <= n1) == (k2 <= n1) && continue
+        len = min(sa.lcparray[i], n1-min(k1,k2)+1)
+        if len > maxlen
+            maxlen = len
+        end
     end
-    sort!(commonlengths, rev=true)
-    
 
+    for i in maxinds
+        k1, k2 = sa[i-1], sa[i]
+        len = min(sa.lcparray[i], n1-min(k1,k2)+1)
+        for j = i-1:-1:2
+            (sa[j-1] <= m) == (sa[i-1] <= m) || break
+        end
+    end
+
+
+end
+
+function getlcs(t1::Vector{Int}, t2::Vector{Int}, isfirst::Bool, minlen=1)
+    m = length(t1)
+    text = copy(t1)
+    append!(text, t2)
+    sa = sais(text)
+    lcps = lcparray(sa, text)
+
+    maxinds, maxlcp = Int[], 0
+    for i = 2:length(lcps)
+        k1, k2 = sa[i-1], sa[i]
+        (k1 <= m) == (k2 <= m) && continue
+        lcp = min(lcps[i], m-min(k1,k2)+1)
+        if lcp >= maxlcp
+            lcp > maxlcp && (maxinds = Int[])
+            push!(maxinds, i)
+            maxlcp = lcp
+        end
+    end
+
+    maxk1, maxk2 = 0, 0
+    for i in maxinds
+        k1, k2 = sa[i-1], sa[i]
+        lcp = min(lcps[i], m-min(k1,k2)+1)
+        for j = i-1:-1:2
+            (sa[j-1] <= m) == (sa[i-1] <= m) || break
+            lcps[j] < maxlcp && break
+            if isfirst
+                sa[j-1] < k1 && (k1 = sa[j-1])
+            else
+                sa[j-1] > k1 && (k1 = sa[j-1])
+            end
+        end
+        for j = i+1:length(lcps)
+            (sa[j] <= m) == (sa[i] <= m) || break
+            lcps[j] < maxlcp && break
+            if isfirst
+                sa[j] < k2 && (k2 = sa[j])
+            else
+                sa[j] > k2 && (k2 = sa[j])
+            end
+        end
+        k1, k2 = k1 > k2 ? (k2,k1) : (k1,k2)
+        k2 -= m
+        if isfirst
+            if maxk1 == 0 || k1 < maxk1
+                maxk1,maxk2 = k1,k2
+            end
+        else
+            if maxk1 == 0 || k1 > maxk1
+                maxk1,maxk2 = k1,k2
+            end
+        end
+    end
+    maxlcp >= minlen ? (maxk1,maxk1+maxlcp-1,maxk2,maxk2+maxlcp-1) : (0,0,0,0)
 end
 
 function match(t1::Vector{Int}, t2::Vector{Int})
@@ -97,62 +165,6 @@ function align(s1::String, s2::String)
     t1 = Int[Int(s1[i]) for i=1:length(s1)]
     t2 = Int[Int(s2[i]) for i=1:length(s2)]
     align(t1, t2)
-end
-
-function getlcs(t1::Vector{Int}, t2::Vector{Int}, isfirst::Bool, minlen=1)
-    m = length(t1)
-    text = copy(t1)
-    append!(text, t2)
-    sa = sais(text)
-    lcps = lcparray(sa, text)
-
-    maxinds, maxlcp = Int[], 0
-    for i = 2:length(lcps)
-        k1, k2 = sa[i-1], sa[i]
-        (k1 <= m) == (k2 <= m) && continue
-        lcp = min(lcps[i], m-min(k1,k2)+1)
-        if lcp >= maxlcp
-            lcp > maxlcp && (maxinds = Int[])
-            push!(maxinds, i)
-            maxlcp = lcp
-        end
-    end
-
-    maxk1, maxk2 = 0, 0
-    for i in maxinds
-        k1, k2 = sa[i-1], sa[i]
-        lcp = min(lcps[i], m-min(k1,k2)+1)
-        for j = i-1:-1:2
-            (sa[j-1] <= m) == (sa[i-1] <= m) || break
-            lcps[j] < maxlcp && break
-            if isfirst
-                sa[j-1] < k1 && (k1 = sa[j-1])
-            else
-                sa[j-1] > k1 && (k1 = sa[j-1])
-            end
-        end
-        for j = i+1:length(lcps)
-            (sa[j] <= m) == (sa[i] <= m) || break
-            lcps[j] < maxlcp && break
-            if isfirst
-                sa[j] < k2 && (k2 = sa[j])
-            else
-                sa[j] > k2 && (k2 = sa[j])
-            end
-        end
-        k1, k2 = k1 > k2 ? (k2,k1) : (k1,k2)
-        k2 -= m
-        if isfirst
-            if maxk1 == 0 || k1 < maxk1
-                maxk1,maxk2 = k1,k2
-            end
-        else
-            if maxk1 == 0 || k1 > maxk1
-                maxk1,maxk2 = k1,k2
-            end
-        end
-    end
-    maxlcp >= minlen ? (maxk1,maxk1+maxlcp-1,maxk2,maxk2+maxlcp-1) : (0,0,0,0)
 end
 
 function getlcs2(t1::Vector{Int}, t2::Vector{Int}, isfirst::Bool, minlen=1)
