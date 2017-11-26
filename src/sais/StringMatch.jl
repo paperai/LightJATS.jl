@@ -14,11 +14,20 @@ end
 isvalid(s::State) = s.i1 > 0 && s.i1 <= s.j1 && s.i2 > 0 && s.i2 <= s.j2
 
 function match(seq1::Vector{Int}, seq2::Vector{Int})
+    aligns = Tuple[]
     states = [State(1,length(t1),1,length(t2),true)]
     while !isempty(states)
         st = pop!(states)
-        newst = getlcs(t1[st.i1:st.j1], t2[st.i2:st.j2], st.leftmost)
+        newst = lcsubstring(t1[st.i1:st.j1], t2[st.i2:st.j2], st.leftmost)
 
+        newst = (newst[1]+st.i1-1, newst.j1+st.i1-1, newst.i2+st.i2-1, newst.j2+st.i2-1)
+        isvalid(newst) || continue
+        push!(aligns, newst)
+
+        left = State(st.i1, newst.i1-1, st.i2, newst.i2-1, false)
+        right = State(newst.j1+1, st.j1, newst.j2+1, st.j2, true)
+        isvalid(left) && push!(states, left)
+        isvalid(right) && push!(states, right)
     end
 end
 
@@ -37,47 +46,27 @@ function lcsubstring(seq1::Vector{Int}, seq2::Vector{Int}, leftmost::Bool)
         lcp > maxlcp && (maxlcp = lcp)
     end
 
-    
+    bestk1, bestk2 = 0, 0
     for i = 1:length(lcparray)
         lcp = lcparray[i]
         lcp == maxlcp || continue
         i < length(lcparray) && lcparray[i+1] == maxlcp && continue
 
         s = findprev(x -> x != maxlcp, lcparray, i)
-        i1, i2 = 0, 0
+        k1 = leftmost ? length(seq) : 0
+        k2 = leftmost ? length(seq) : 0
         for j = s:i
-            if sa[j] <= n1
-                if i1 == 0 || (leftmost == sa[j] < sa[i1])
-                    i1 = j
-                end
-            else
-                if i2 == 0 || (leftmost == sa[j] < sa[i2])
-                    i2 = j
-                end
+            if sa[j] <= n1 && leftmost == (sa[j] < k1)
+                k1 = sa[j]
+            elseif sa[j] > n1 && leftmost == (sa[j] < k2)
+                k2 = sa[j]
             end
         end
-        i1 + i2
     end
-
-    maxinds, max lcp = Int[], 0
-    for i = 2:length(lcparray)
-        k1, k2 = sa[i-1], sa[i]
-        (k1 <= n1) == (k2 <= n1) && continue
-        lcp = min(lcparray[i], n1-min(k1,k2)+1)
-        if lcp > maxlcp
-            maxlen = lcp
-            push!(maxinds, i)
-        end
-    end
-
-    for ind in maxinds
-        j1 = findprev(x -> x != maxlcp, lcparray, ind)
-        j2 = findnext(x -> x != maxlcp, lcparray, ind)
-        c1 = count(j -> sa[j] <= n1, j1-1:j2)
-        c2 = j2 - j1 + 1 - c1
-    end
+    (bestk1, bestk1+maxlcp-1, bestk2, bestk2+maxlcp-1)
 end
 
+#=
 function getlcs(t1::Vector{Int}, t2::Vector{Int}, isfirst::Bool, minlen=1)
     m = length(t1)
     text = copy(t1)
@@ -218,5 +207,6 @@ function getlcs2(t1::Vector{Int}, t2::Vector{Int}, isfirst::Bool, minlen=1)
     end
     maxlcp >= minlen ? (maxk1,maxk1+maxlcp-1,maxk2,maxk2+maxlcp-1) : (0,0,0,0)
 end
+=#
 
 end
