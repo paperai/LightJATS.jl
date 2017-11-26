@@ -22,30 +22,60 @@ function match(seq1::Vector{Int}, seq2::Vector{Int})
     end
 end
 
-function lcsubstring(seq1::Vector{Int}, seq2::Vector{Int})
+function lcsubstring(seq1::Vector{Int}, seq2::Vector{Int}, leftmost::Bool)
     n1 = length(seq1)
-    seq = cat(1, seq1, seq2)
+    seq = copy(seq1)
+    maxi = max(maximum(seq1), maximum(seq2))
+    push!(seq, maxi+1)
+    append!(seq, seq2)
     sa = SuffixArray(seq)
+    lcparray = sa.lcparray
+    maxlcp = 0
+    for i = 1:length(lcparray)
+        (sa[i-1] <= n1) == (sa[i] <= n1) && continue
+        lcp = lcparray[i]
+        lcp > maxlcp && (maxlcp = lcp)
+    end
 
-    maxinds, maxlen = Int[], 0
-    for i = 2:length(sa.lcparray)
+    
+    for i = 1:length(lcparray)
+        lcp = lcparray[i]
+        lcp == maxlcp || continue
+        i < length(lcparray) && lcparray[i+1] == maxlcp && continue
+
+        s = findprev(x -> x != maxlcp, lcparray, i)
+        i1, i2 = 0, 0
+        for j = s:i
+            if sa[j] <= n1
+                if i1 == 0 || (leftmost == sa[j] < sa[i1])
+                    i1 = j
+                end
+            else
+                if i2 == 0 || (leftmost == sa[j] < sa[i2])
+                    i2 = j
+                end
+            end
+        end
+        i1 + i2
+    end
+
+    maxinds, max lcp = Int[], 0
+    for i = 2:length(lcparray)
         k1, k2 = sa[i-1], sa[i]
         (k1 <= n1) == (k2 <= n1) && continue
-        len = min(sa.lcparray[i], n1-min(k1,k2)+1)
-        if len > maxlen
-            maxlen = len
+        lcp = min(lcparray[i], n1-min(k1,k2)+1)
+        if lcp > maxlcp
+            maxlen = lcp
+            push!(maxinds, i)
         end
     end
 
-    for i in maxinds
-        k1, k2 = sa[i-1], sa[i]
-        len = min(sa.lcparray[i], n1-min(k1,k2)+1)
-        for j = i-1:-1:2
-            (sa[j-1] <= m) == (sa[i-1] <= m) || break
-        end
+    for ind in maxinds
+        j1 = findprev(x -> x != maxlcp, lcparray, ind)
+        j2 = findnext(x -> x != maxlcp, lcparray, ind)
+        c1 = count(j -> sa[j] <= n1, j1-1:j2)
+        c2 = j2 - j1 + 1 - c1
     end
-
-
 end
 
 function getlcs(t1::Vector{Int}, t2::Vector{Int}, isfirst::Bool, minlen=1)
