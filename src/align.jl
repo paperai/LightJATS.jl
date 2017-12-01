@@ -9,11 +9,33 @@ function align(pdffile::String, xmlfile::String)
     pdids = map(x -> get!(iddict,x.c,length(iddict)+1), pdchars)
 
     xmltree = readjats(xmlfile)
-    xmlchars = Vector{Char}(string(p))
-    xmlids = map(c -> get!(iddict,string(c),length(iddict)+1), xmlchars)
+    xmltree = xmltree[findfirst(c -> c.name == "body", xmltree.children)]
+    tokenize!(xmltree)
+    xmlchars = findall(isempty, xmltree)
+    xmlids = map(c -> get!(iddict,string(c.name),length(iddict)+1), xmlchars)
     pairs = lcsmatch(pdids, xmlids)
 
     for (k,v) in pairs
-        pdchars[k].tag = xmlchars[v]
+        push!(pdchars[k].tags, xmlchars[v].name)
+    end
+    write("c.txt", pdchars)
+end
+
+function tokenize!(tree::Tree)
+    nodes = findall(isempty, tree)
+    dict = Dict(n.parent => n.parent for n in nodes)
+    for node in keys(dict)
+        children = Tree[]
+        for c in node.children
+            if isempty(c)
+                for char in Vector{Char}(c.name)
+                    char == ' ' && continue
+                    push!(children, Tree(string(char)))
+                end
+            else
+                push!(children, Tree("[$(c.name)]"))
+            end
+        end
+        setchildren!(node, children)
     end
 end

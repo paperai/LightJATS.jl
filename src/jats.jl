@@ -50,7 +50,7 @@ function readjats(path::String)
         end
 
         postprocess!(article)
-        jsonize!(article)
+        #jsonize!(article)
         return article
     catch e
         if isa(e, UnsupportedException)
@@ -264,18 +264,6 @@ function jsonize!(tree::Tree)
         setchildren!(tree, Tree(join(strs," ")))
     else
         foreach(jsonize!, tree.children)
-    end
-end
-
-function tokenize!(tree::Tree)
-    leaves = find(isempty, tree)
-    for x in leaves
-        p = x.parent
-        @assert length(p) == 1
-        children = map(Vector{Char}(p[1].name)) do c
-            Tree(string(c))
-        end
-        setchildren!(p, children)
     end
 end
 
