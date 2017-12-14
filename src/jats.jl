@@ -50,7 +50,7 @@ function readjats(path::String)
         end
 
         postprocess!(article)
-        #jsonize!(article)
+        jsonize!(article)
         return article
     catch e
         if isa(e, UnsupportedException)
@@ -281,7 +281,7 @@ function create_sample(rootpath::String)
 
         # remove non-figure floats
         if tree[end].name == "floats-group"
-            floatset = Set(["fig","fig-group"])
+            floatset = Set(["fig","fig-group","table-wrap"])
             floats = Tree[]
             topdown_while(tree[end]) do t
                 if t.name in floatset
@@ -302,7 +302,7 @@ function create_sample(rootpath::String)
             end
         end
 
-        dir = "C:/Users/hshindo/Documents/sample_xml4-2/$filename"
+        dir = "C:/Users/hshindo/Documents/sample_xml4-3/$filename"
         isdir(dir) || mkdir(dir)
         open("$dir/$file","w") do f
             println(f, toxml(tree))
