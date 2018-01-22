@@ -2,6 +2,8 @@ using .StringMatch
 
 export align
 
+const AlignCount = Dict()
+
 function align(pdffile::String, xmlfile::String)
     pdcontents = readpdf(pdffile)
     pdchars = filter(c -> isa(c,PDText), pdcontents)
@@ -15,10 +17,34 @@ function align(pdffile::String, xmlfile::String)
     xmlids = map(c -> get!(iddict,string(c.name),length(iddict)+1), xmlchars)
     pairs = lcsmatch(pdids, xmlids)
 
+    xml2pdf = Dict()
     for (k,v) in pairs
+        xml2pdf[v] = k
         push!(pdchars[k].tags, xmlchars[v].name)
     end
-    write("c.txt", pdchars)
+    ranges = Dict()
+    i = 1
+    bottomup(xmltree) do node
+        if isempty(node)
+            ranges[node] = i:i
+            i += 1
+        else
+            ranges[node] = start(ranges[node[1]]):last(ranges[node[end]])
+        end
+    end
+    for (node,r) in ranges
+        i = start(r)
+        j = last(r)
+        i == j && continue
+        haskey(AlignCount,node.name) || (AlignCount[node.name] = [0,0])
+        countd = AlignCount[node.name]
+        if haskey(xml2pdf,i) && haskey(xml2pdf,j)
+            countd[1] += 1
+        else
+            countd[2] += 1
+        end
+    end
+    # write("c.txt", pdchars)
 end
 
 function tokenize!(tree::Tree)

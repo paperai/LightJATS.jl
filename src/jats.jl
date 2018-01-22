@@ -62,7 +62,7 @@ function readjats(path::String)
     end
 end
 
-function Base.convert(::Type{Tree}, enode::EzXML.Node, dict=nothing)
+function Base.convert(::Type{Tree}, enode::EzXML.Node, dict=Dict())
     elements = filter(nodes(enode)) do n
         iselement(n) && return true
         istext(n) && !ismatch(r"^\s*$",nodecontent(n))
@@ -74,7 +74,7 @@ function Base.convert(::Type{Tree}, enode::EzXML.Node, dict=nothing)
     deletable = begin
         if any(istext, elements)
             false
-        elseif dict == nothing || any(e -> haskey(dict,e), elements)
+        elseif isempty(dict) || any(e -> haskey(dict,e), elements)
             true
         elseif any(n -> any(!isempty,n.children), tempnodes)
             true
@@ -87,7 +87,7 @@ function Base.convert(::Type{Tree}, enode::EzXML.Node, dict=nothing)
     for i = 1:length(elements)
         e = elements[i]
         t = tempnodes[i]
-        if istext(e) || dict == nothing || haskey(dict,e)
+        if istext(e) || isempty(dict) || haskey(dict,e)
             if isempty(children)
                 push!(children, t)
             elseif isempty(t) && isempty(children[end])
@@ -107,6 +107,7 @@ function Base.convert(::Type{Tree}, enode::EzXML.Node, dict=nothing)
             end
         end
     end
+    isempty(children) && push!(children,Tree(""))
     Tree(nodename(enode), children)
 end
 

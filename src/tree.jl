@@ -174,7 +174,7 @@ function toxml(tree::Tree)
         end
     end
     closetag = split(tree.name, " ")[1]
-    strs[end][end] == '>' && push!(strs,"\n")
+    !isempty(strs) && !isempty(strs[end]) && strs[end][end] == '>' && push!(strs,"\n")
     push!(strs, "</$closetag>")
     join(strs)
 end
