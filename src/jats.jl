@@ -22,8 +22,6 @@ function readjats(path::String)
         article = Tree("article")
         xml_front = findfirst(xml_article, "front")
         push!(article, parse_front(xml_front))
-        push!(article[end], Tree("pdf-link",Tree("http://www.aclweb.org/anthology/P12-1046")))
-        push!(article[end], Tree("xml-link",Tree("http://example.xml")))
 
         body = findfirst(xml_article, "body")
         push!(article, parse_body(body))
@@ -303,11 +301,14 @@ function create_sample(rootpath::String)
             end
         end
 
-        dir = "C:/Users/hshindo/Documents/sample_xml4-3/$filename"
+        dir = "C:/Users/hshindo/Documents/sample_xml4-4/$filename"
         isdir(dir) || mkdir(dir)
         open("$dir/$file","w") do f
             println(f, toxml(tree))
         end
+        isfile(pdfpath) && cp(pdfpath,"$dir/$filename.pdf")
+        pdftxtpath = joinpath(rootpath, "$filename.pdf.txt")
+        isfile(pdftxtpath) && cp(pdftxtpath,"$dir/$filename.pdf.txt")
         saveimages(pdfpath, options=["-o",dir,"-dpi","200"])
     end
 end
