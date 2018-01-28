@@ -2,12 +2,8 @@
 
 * [article](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ja30.html)
     * [front](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-j6s0.html)
-        * [journal-title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-cvf0.html)
         * [article-title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-e630.html)
-        * [year](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-vwc2.html)
         * [abstract](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ba20.html)
-        * pdf-link
-        * xml-link
         * ~~[contrib[@contrib-type="author"]](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-n3w0.html)~~ → rename to `author`
             * [prefix](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-jxr0.html)
             * [given-names](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-fwt0.html)
