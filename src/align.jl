@@ -4,8 +4,8 @@ export align
 
 const AlignCount = Dict()
 
-function align(pdffile::String, xmlfile::String)
-    pdcontents = readpdf(pdffile)
+function align(pdftxtfile::String, xmlfile::String)
+    pdcontents = readpdftxt(pdftxtfile)
     pdchars = filter(c -> isa(c,PDText), pdcontents)
     iddict = Dict{String,Int}()
     pdids = map(x -> get!(iddict,x.c,length(iddict)+1), pdchars)
@@ -44,7 +44,6 @@ function align(pdffile::String, xmlfile::String)
             countd[2] += 1
         end
     end
-    # write("c.txt", pdchars)
 end
 
 function tokenize!(tree::Tree)

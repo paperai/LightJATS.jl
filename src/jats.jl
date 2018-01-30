@@ -41,14 +41,14 @@ function readjats(path::String)
 
         maths = findall(article, "math")
         for i = 1:length(maths)
-            math = maths[i]
-            mathml = root(parsexml(toxml(math)))
-            normalize_mathml!(mathml)
-            replace!(math, convert(Tree,mathml))
+            #math = maths[i]
+            #mathml = root(parsexml(toxml(math)))
+            #normalize_mathml!(mathml)
+            #replace!(math, convert(Tree,mathml))
         end
 
         postprocess!(article)
-        jsonize!(article)
+        #jsonize!(article)
         return article
     catch e
         if isa(e, UnsupportedException)
@@ -111,11 +111,11 @@ end
 
 function parse_front(front::EzXML.Node)
     xpath = """
-        journal-meta/journal-title-group/journal-title
-        | article-meta/title-group/article-title
-        | article-meta/pub-date[1]/year
+        article-meta/title-group/article-title
         | article-meta/abstract
         """
+    # journal-meta/journal-title-group/journal-title
+    # article-meta/pub-date[1]/year
     tree = Tree(nodename(front), map(parse_body,find(front,xpath)))
 
     contrib = "article-meta/contrib-group/contrib[@contrib-type=\"author\"]"
@@ -308,33 +308,36 @@ function create_sample(rootpath::String)
         end
         isfile(pdfpath) && cp(pdfpath,"$dir/$filename.pdf")
         pdftxtpath = joinpath(rootpath, "$filename.pdf.txt")
-        isfile(pdftxtpath) && cp(pdftxtpath,"$dir/$filename.pdf.txt")
+        if isfile(pdftxtpath)
+            cp(pdftxtpath, "$dir/$filename.pdf.txt")
+            cp("D:/P12-1046.anno", "$dir/$filename.anno")
+        end
         saveimages(pdfpath, options=["-o",dir,"-dpi","200"])
     end
 end
 
 function normalize_mathml!(mathml::EzXML.Node)
-    # replace <mn>, <mo>, <mtext>, <ms> with <mi>
-    for node in find(mathml, "//mn | //mo | //mtext | //ms")
-        if nodename(node) == "ms"
-            setnodecontent!(node, "\"$(nodecontent(node))\"")
+    function f()
+        # replace <mn>, <mo>, <mtext>, <ms> with <mi>
+        for node in find(mathml, "//mn | //mo | //mtext | //ms")
+            if nodename(node) == "ms"
+                setnodecontent!(node, "\"$(nodecontent(node))\"")
+            end
+            setnodename!(node, "mi")
         end
-        setnodename!(node, "mi")
-    end
-    # <mi>sin</mi> -> <mi>s</mi><mi>i</mi><mi>n</mi>
-    for node in find(mathml, "//mi")
-        chars = Vector{Char}(nodecontent(node))
-        length(chars) == 1 && continue
-        setnodecontent!(node, string(chars[1]))
-        target = node
-        for i = 2:length(chars)
-            mi = ElementNode("mi")
-            link!(mi, TextNode(string(chars[i])))
-            linknext!(target, mi)
-            target = mi
+        # <mi>sin</mi> -> <mi>s</mi><mi>i</mi><mi>n</mi>
+        for node in find(mathml, "//mi")
+            chars = Vector{Char}(nodecontent(node))
+            length(chars) == 1 && continue
+            setnodecontent!(node, string(chars[1]))
+            target = node
+            for i = 2:length(chars)
+                mi = ElementNode("mi")
+                link!(mi, TextNode(string(chars[i])))
+                linknext!(target, mi)
+                target = mi
+            end
         end
     end
-    for node in find(mathml, "//text()")
 
-    end
 end
