@@ -1,4 +1,5 @@
-export findall, topdown, topdown_while, toxml, tosexpr
+export Tree
+export findall, setchildren!, topdown, topdown_while, toxml, tosexpr
 
 mutable struct Tree
     name
