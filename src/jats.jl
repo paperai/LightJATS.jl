@@ -111,11 +111,11 @@ end
 
 function parse_front(front::EzXML.Node)
     xpath = """
-        article-meta/title-group/article-title
+        journal-meta/journal-title-group/journal-title
+        | article-meta/pub-date[1]/year
+        | article-meta/title-group/article-title
         | article-meta/abstract
         """
-    # journal-meta/journal-title-group/journal-title
-    # article-meta/pub-date[1]/year
     tree = Tree(nodename(front), map(parse_body,find(front,xpath)))
 
     contrib = "article-meta/contrib-group/contrib[@contrib-type=\"author\"]"
