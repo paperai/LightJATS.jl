@@ -46,7 +46,7 @@ function align(pdftxtfile::String, xmlfile::String)
     end
 end
 
-function tokenize!(tree::Tree)
+function tokenize2!(tree::Tree)
     nodes = findall(isempty, tree)
     dict = Dict(n.parent => n.parent for n in nodes)
     for node in keys(dict)

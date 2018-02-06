@@ -15,16 +15,12 @@ function readjats(path::String)
             return
         end
 
-        #images = readimages(replace(path,".xml",".pdf"))
-        #graphics = find(xml_article, "//graphic | //inline-graphic")
-        #length(images) == length(graphics) || warn("$(length(images)) vs $(length(graphics))")
-
         article = Tree("article")
         xml_front = findfirst(xml_article, "front")
         push!(article, parse_front(xml_front))
 
         body = findfirst(xml_article, "body")
-        push!(article, parse_body(body))
+        # push!(article, parse_body(body))
 
         back = find(xml_article, "back")
         if !isempty(back)
@@ -47,8 +43,9 @@ function readjats(path::String)
             #replace!(math, convert(Tree,mathml))
         end
 
+        tokenize_word!(article)
         postprocess!(article)
-        #jsonize!(article)
+        nonrecursive!(article)
         return article
     catch e
         if isa(e, UnsupportedException)
@@ -140,7 +137,6 @@ function parse_body(body::EzXML.Node)
         | //boxed-text/label
         | //boxed-text/caption
         | //boxed-text/caption/title
-        | //code
         | //def-list
         | //def-list/label
         | //def-list/title
@@ -162,6 +158,7 @@ function parse_body(body::EzXML.Node)
         | //fig-group/label
         | //fig-group/caption
         | //fig-group/caption/title
+        | //fig-group/caption/p
         | //list
         | //list/label
         | //list/title
@@ -238,6 +235,29 @@ function findfloats(tree::Tree)
     floats
 end
 
+function tokenize_word!(tree::Tree)
+    nodes = findall(isempty, tree)
+    dict = ObjectIdDict()
+    for node in nodes
+        p = node.parent
+        haskey(dict,p) && continue
+        dict[p] = p
+        children = Tree[]
+        for c in p.children
+            if isempty(c)
+                c.name = normalize_string(c.name, :NFKC)
+                words = Vector{String}(split(c.name," ",keep=false))
+                append!(children, map(Tree,words))
+            else
+                push!(children, c)
+            end
+        end
+        isempty(children) && push!(children,Tree(""))
+        setchildren!(p, children)
+    end
+    tree
+end
+
 function postprocess!(tree::Tree)
     # merge <label> with <title>
     for i = length(tree)-1:-1:1
@@ -246,23 +266,30 @@ function postprocess!(tree::Tree)
             deleteat!(tree, i)
         end
     end
+    # flatten caption's children
+    for child in tree.children
+        if child.name == "caption"
+            children = Tree[]
+            foreach(c -> append!(children,c.children), child.children)
+            setchildren!(child, children)
+        end
+    end
     foreach(postprocess!, tree.children)
 end
 
-function jsonize!(tree::Tree)
-    n = count(isempty, tree.children)
-    if n > 0
-        strs = String[]
+function nonrecursive!(tree::Tree)
+    if any(isempty, tree.children)
+        children = Tree[]
         for c in tree.children
             if isempty(c)
-                push!(strs, c.name)
+                push!(children, c)
             else
-                push!(strs, "[$(c.name)]")
+                append!(children, findall(isempty,c))
             end
         end
-        setchildren!(tree, Tree(join(strs," ")))
+        setchildren!(tree, children)
     else
-        foreach(jsonize!, tree.children)
+        foreach(nonrecursive!, tree.children)
     end
 end
 

@@ -22,8 +22,8 @@
         * [disp-formula-group](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-v8v0.html)
             * [label](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sqf0.html)
             * [caption](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-d580.html)
-                * [title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7fz0.html)
-                * [p](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7xd0.html)
+                * ~~[title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7fz0.html)~~ → merge with `caption`
+                * ~~[p](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7xd0.html)~~ → merge with `caption`
         * [list](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-64g0.html)
             * ~~[label](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sqf0.html)~~ → merge with `title`
             * [title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7fz0.html)
@@ -65,19 +65,18 @@
         * [boxed-text](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-i950.html)
             * [label](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sqf0.html)
             * [caption](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-d580.html)
-                * [title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7fz0.html)
-                * [p](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7xd0.html)
-        * [code](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ty80.html)
+                * ~~[title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7fz0.html)~~ → merge with `caption`
+                * ~~[p](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7xd0.html)~~ → merge with `caption`
         * [fig](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ib40.html)
             * [label](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sqf0.html)
             * [caption](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-d580.html)
-                * [title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7fz0.html)
-                * [p](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7xd0.html)
+                * ~~[title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7fz0.html)~~ → merge with `caption`
+                * ~~[p](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7xd0.html)~~ → merge with `caption`
         * [fig-group](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-83s0.html)
             * [label](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sqf0.html)
             * [caption](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-d580.html)
-                * [title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7fz0.html)
-                * [p](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7xd0.html)
+                * ~~[title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7fz0.html)~~ → merge with `caption`
+                * ~~[p](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7xd0.html)~~ → merge with `caption`
         * [table](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-by90.html)
             * [thead](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-u7z0.html)
                 * [tr](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-jyz0.html)
@@ -97,10 +96,11 @@
         * [table-wrap](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-mb90.html)
             * [label](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sqf0.html)
             * [caption](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-d580.html)
-                * [title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7fz0.html)
-                * [p](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7xd0.html)
+                * ~~[title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7fz0.html)~~ → merge with `caption`
+                * ~~[p](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7xd0.html)~~ -> merge with `caption`
+            * table
         * [table-wrap-group](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-c5m0.html)
             * [label](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sqf0.html)
             * [caption](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-d580.html)
-                * [title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7fz0.html)
-                * [p](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7xd0.html)
+                * ~~[title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7fz0.html)~~ → merge with `caption`
+                * ~~[p](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7xd0.html)~~ -> merge with `caption`
