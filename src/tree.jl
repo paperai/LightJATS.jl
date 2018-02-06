@@ -1,4 +1,7 @@
-export findall, topdown, topdown_while, toxml, tosexpr
+using JSON
+
+export Tree
+export findall, setchildren!, topdown, topdown_while, toxml, tosexpr, tojson
 
 mutable struct Tree
     name
@@ -174,17 +177,28 @@ function toxml(tree::Tree)
         end
     end
     closetag = split(tree.name, " ")[1]
-    strs[end][end] == '>' && push!(strs,"\n")
+    !isempty(strs) && !isempty(strs[end]) && strs[end][end] == '>' && push!(strs,"\n")
     push!(strs, "</$closetag>")
     join(strs)
 end
 
-function Base.string(tree::Tree)
+function tojson(tree::Tree)
+    n = count(isempty, tree.children)
+    @assert n == 0 || n == length(tree)
+    if n == 0
+        dict = Dict()
+        for c in tree.children
+            # dict[c.name] = 
+        end
+    end
+end
+
+function Base.string(tree::Tree, delim="")
     strs = String[]
     topdown(tree) do node
         isempty(node) && push!(strs,node.name)
     end
-    join(strs)
+    join(strs, delim)
 end
 
 function Base.parse(::Type{Tree}, sexpr::String)

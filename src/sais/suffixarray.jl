@@ -7,7 +7,7 @@ Base.getindex(sa::SuffixArray, i::Int) = sa.data[i]
 
 function SuffixArray(text::Vector{Int})
     sa = sais(text)
-    lcparray = lcparray(sa, text)
+    lcparray = StringMatch.lcparray(sa, text)
     SuffixArray(sa, lcparray)
 end
 

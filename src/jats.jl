@@ -18,15 +18,13 @@ function readjats(path::String)
         article = Tree("article")
         xml_front = findfirst(xml_article, "front")
         push!(article, parse_front(xml_front))
-        #push!(article[end], Tree("pdf-link",Tree("http://www.aclweb.org/anthology/P12-1046")))
-        #push!(article[end], Tree("xml-link",Tree("http://example.xml")))
 
         body = findfirst(xml_article, "body")
-        push!(article, parse_body(body))
+        # push!(article, parse_body(body))
 
         back = find(xml_article, "back")
         if !isempty(back)
-            push!(article, parse_back(back[1]))
+            #push!(article, parse_back(back[1]))
         end
 
         push!(article, Tree("floats-group"))
@@ -39,14 +37,15 @@ function readjats(path::String)
 
         maths = findall(article, "math")
         for i = 1:length(maths)
-            math = maths[i]
+            #math = maths[i]
             #mathml = root(parsexml(toxml(math)))
             #normalize_mathml!(mathml)
             #replace!(math, convert(Tree,mathml))
         end
 
+        tokenize_word!(article)
         postprocess!(article)
-        #jsonize!(article)
+        nonrecursive!(article)
         return article
     catch e
         if isa(e, UnsupportedException)
@@ -58,7 +57,7 @@ function readjats(path::String)
     end
 end
 
-function Base.convert(::Type{Tree}, enode::EzXML.Node, dict=nothing)
+function Base.convert(::Type{Tree}, enode::EzXML.Node, dict=Dict())
     elements = filter(nodes(enode)) do n
         iselement(n) && return true
         istext(n) && !ismatch(r"^\s*$",nodecontent(n))
@@ -70,7 +69,7 @@ function Base.convert(::Type{Tree}, enode::EzXML.Node, dict=nothing)
     deletable = begin
         if any(istext, elements)
             false
-        elseif dict == nothing || any(e -> haskey(dict,e), elements)
+        elseif isempty(dict) || any(e -> haskey(dict,e), elements)
             true
         elseif any(n -> any(!isempty,n.children), tempnodes)
             true
@@ -83,7 +82,7 @@ function Base.convert(::Type{Tree}, enode::EzXML.Node, dict=nothing)
     for i = 1:length(elements)
         e = elements[i]
         t = tempnodes[i]
-        if istext(e) || dict == nothing || haskey(dict,e)
+        if istext(e) || isempty(dict) || haskey(dict,e)
             if isempty(children)
                 push!(children, t)
             elseif isempty(t) && isempty(children[end])
@@ -103,14 +102,15 @@ function Base.convert(::Type{Tree}, enode::EzXML.Node, dict=nothing)
             end
         end
     end
+    isempty(children) && push!(children,Tree(""))
     Tree(nodename(enode), children)
 end
 
 function parse_front(front::EzXML.Node)
     xpath = """
         journal-meta/journal-title-group/journal-title
-        | article-meta/title-group/article-title
         | article-meta/pub-date[1]/year
+        | article-meta/title-group/article-title
         | article-meta/abstract
         """
     tree = Tree(nodename(front), map(parse_body,find(front,xpath)))
@@ -137,7 +137,6 @@ function parse_body(body::EzXML.Node)
         | //boxed-text/label
         | //boxed-text/caption
         | //boxed-text/caption/title
-        | //code
         | //def-list
         | //def-list/label
         | //def-list/title
@@ -159,6 +158,7 @@ function parse_body(body::EzXML.Node)
         | //fig-group/label
         | //fig-group/caption
         | //fig-group/caption/title
+        | //fig-group/caption/p
         | //list
         | //list/label
         | //list/title
@@ -185,8 +185,6 @@ function parse_body(body::EzXML.Node)
         | //table-wrap-group/label
         | //table-wrap-group/caption
         | //table-wrap-group/caption/title
-        | //sub
-        | //sup
         """
     dict = Dict(n => n for n in find(body,xpath))
     convert(Tree, body, dict)
@@ -237,6 +235,29 @@ function findfloats(tree::Tree)
     floats
 end
 
+function tokenize_word!(tree::Tree)
+    nodes = findall(isempty, tree)
+    dict = ObjectIdDict()
+    for node in nodes
+        p = node.parent
+        haskey(dict,p) && continue
+        dict[p] = p
+        children = Tree[]
+        for c in p.children
+            if isempty(c)
+                c.name = normalize_string(c.name, :NFKC)
+                words = Vector{String}(split(c.name," ",keep=false))
+                append!(children, map(Tree,words))
+            else
+                push!(children, c)
+            end
+        end
+        isempty(children) && push!(children,Tree(""))
+        setchildren!(p, children)
+    end
+    tree
+end
+
 function postprocess!(tree::Tree)
     # merge <label> with <title>
     for i = length(tree)-1:-1:1
@@ -245,92 +266,55 @@ function postprocess!(tree::Tree)
             deleteat!(tree, i)
         end
     end
+    # flatten caption's children
+    for child in tree.children
+        if child.name == "caption"
+            children = Tree[]
+            foreach(c -> append!(children,c.children), child.children)
+            setchildren!(child, children)
+        end
+    end
     foreach(postprocess!, tree.children)
 end
 
-function jsonize!(tree::Tree)
-    n = count(isempty, tree.children)
-    if n > 0
-        strs = String[]
+function nonrecursive!(tree::Tree)
+    if any(isempty, tree.children)
+        children = Tree[]
         for c in tree.children
             if isempty(c)
-                push!(strs, c.name)
+                push!(children, c)
             else
-                push!(strs, "[$(c.name)]")
+                append!(children, findall(isempty,c))
             end
         end
-        setchildren!(tree, Tree(join(strs," ")))
+        setchildren!(tree, children)
     else
-        foreach(jsonize!, tree.children)
-    end
-end
-
-function create_sample(rootpath::String)
-    for file in readdir(rootpath)
-        endswith(file,".xml") || continue
-        println(file)
-        filename = splitext(file)[1]
-        xmlpath = joinpath(rootpath, file)
-        pdfpath = joinpath(rootpath, "$filename.pdf")
-        isfile(pdfpath) || continue
-
-        tree = readjats(xmlpath)
-        delete!(tree["body"])
-
-        # remove non-figure floats
-        if tree[end].name == "floats-group"
-            floatset = Set(["fig","fig-group"])
-            floats = Tree[]
-            topdown_while(tree[end]) do t
-                if t.name in floatset
-                    push!(floats, t)
-                    false
-                else
-                    true
-                end
-            end
-            setchildren!(tree[end], floats)
-
-            count = 1
-            for node in floats
-                node.name == "fig" || continue
-                imgname = "$(file[1:end-4])_$count.png"
-                node.name = "fig img=\"$imgname\""
-                count += 1
-            end
-        end
-
-        dir = "C:/Users/hshindo/Documents/sample_xml4-1/$filename"
-        isdir(dir) || mkdir(dir)
-        open("$dir/$file","w") do f
-            println(f, toxml(tree))
-        end
-        extract_images(pdfpath, o=dir, dpi=200)
+        foreach(nonrecursive!, tree.children)
     end
 end
 
 function normalize_mathml!(mathml::EzXML.Node)
-    # replace <mn>, <mo>, <mtext>, <ms> with <mi>
-    for node in find(mathml, "//mn | //mo | //mtext | //ms")
-        if nodename(node) == "ms"
-            setnodecontent!(node, "\"$(nodecontent(node))\"")
+    function f()
+        # replace <mn>, <mo>, <mtext>, <ms> with <mi>
+        for node in find(mathml, "//mn | //mo | //mtext | //ms")
+            if nodename(node) == "ms"
+                setnodecontent!(node, "\"$(nodecontent(node))\"")
+            end
+            setnodename!(node, "mi")
         end
-        setnodename!(node, "mi")
-    end
-    # <mi>sin</mi> -> <mi>s</mi><mi>i</mi><mi>n</mi>
-    for node in find(mathml, "//mi")
-        chars = Vector{Char}(nodecontent(node))
-        length(chars) == 1 && continue
-        setnodecontent!(node, string(chars[1]))
-        target = node
-        for i = 2:length(chars)
-            mi = ElementNode("mi")
-            link!(mi, TextNode(string(chars[i])))
-            linknext!(target, mi)
-            target = mi
+        # <mi>sin</mi> -> <mi>s</mi><mi>i</mi><mi>n</mi>
+        for node in find(mathml, "//mi")
+            chars = Vector{Char}(nodecontent(node))
+            length(chars) == 1 && continue
+            setnodecontent!(node, string(chars[1]))
+            target = node
+            for i = 2:length(chars)
+                mi = ElementNode("mi")
+                link!(mi, TextNode(string(chars[i])))
+                linknext!(target, mi)
+                target = mi
+            end
         end
     end
-    for node in find(mathml, "//text()")
 
-    end
 end
