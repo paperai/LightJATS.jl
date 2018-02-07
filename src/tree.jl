@@ -1,7 +1,5 @@
-using JSON
-
 export Tree
-export findall, setchildren!, topdown, topdown_while, toxml, tosexpr, tojson
+export findall, setchildren!, topdown, topdown_while, toxml, tosexpr, todict
 
 mutable struct Tree
     name
@@ -182,14 +180,13 @@ function toxml(tree::Tree)
     join(strs)
 end
 
-function tojson(tree::Tree)
+function todict(tree::Tree)
     n = count(isempty, tree.children)
     @assert n == 0 || n == length(tree)
     if n == 0
-        dict = Dict()
-        for c in tree.children
-            # dict[c.name] = 
-        end
+        Dict(tree.name => map(todict, tree.children))
+    else
+        tree.name
     end
 end
 

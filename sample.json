@@ -1,0 +1,30 @@
+{
+    "article": {
+        "front": {
+            "articleTitle": "Ice VII from aqueous salt solutions",
+            "abstract": "abst abst abst",
+            "authors": [
+                {
+                    "prefix": "pre1 pre1",
+                    "givenNames": "given1 given1",
+                    "surname": "sur1 sur1",
+                    "suffix": "suf1 suf1"
+                },
+                {
+                    "prefix": "pre2 pre2",
+                    "givenNames": "given2 given2",
+                    "surname": "sur2 sur2",
+                    "suffix": "suf2 suf2"
+                },
+            ]
+        },
+        "body": [
+            {
+                "sec": {
+                    "title": "sec title1",
+                    "p": "p1"
+                }
+            }
+        ]
+    }
+}

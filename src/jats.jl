@@ -27,6 +27,7 @@ function readjats(path::String)
             #push!(article, parse_back(back[1]))
         end
 
+        #=
         push!(article, Tree("floats-group"))
         append!(article[end], findfloats(article))
         floats = find(xml_article, "floats-group")
@@ -34,7 +35,8 @@ function readjats(path::String)
             append!(article[end], parse_body(floats[1]).children)
         end
         isempty(article[end]) && deleteat!(article,length(article)) # no floats
-
+        =#
+        
         maths = findall(article, "math")
         for i = 1:length(maths)
             #math = maths[i]
