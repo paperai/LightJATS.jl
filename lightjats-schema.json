@@ -1,0 +1,77 @@
+{
+    "title": "LightJATS json-schema",
+    "type": "object",
+    "properties": {
+        "article": {
+            "type": "object",
+            "properties": {
+                "front": {
+                    "type": "object",
+                    "properties": {
+                        "articleTitle": { "type": "string" },
+                        "abstract": { "type": "string" },
+                        "author": {
+                            "type": "object",
+                            "properties": {
+                                "prefix": { "type": "string" },
+                                "givenNames": { "type": "string" },
+                                "surname": { "type": "string" },
+                                "suffix": { "type": "string" },
+                            },
+                            "required": ["prefix", "givenNames", "surname", "suffix"]
+                        },
+                    },
+                    "required": ["articleTitle", "abstract", "author"]
+                },
+                "body": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "sec": {
+                                "type": "object",
+                                "properties": {
+                                    "title": { "type": "string" },
+                                    "p": {
+
+                                    }
+                                },
+                                "required": ["title", "p"]
+                            }
+                        }
+                    }
+                }
+            },
+            "required": ["front", "body"]
+        }
+    },
+    "required": ["article"]
+}
+* [def-list](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-4hx0.html)
+    * ~~[label](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sqf0.html)~~ → merge with `title`
+    * [title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7fz0.html)
+    * [def-item](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ndx0.html)
+        * [term](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-pdm0.html)
+        * [def](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-xtx0.html)
+* [disp-formula](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-tmx0.html)
+    * [mml:math](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-cgn0.html)
+    * [label](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sqf0.html)
+* [disp-formula-group](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-v8v0.html)
+    * [label](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sqf0.html)
+    * [caption](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-d580.html)
+        * ~~[title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7fz0.html)~~ → merge with `caption`
+        * ~~[p](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7xd0.html)~~ → merge with `caption`
+* [list](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-64g0.html)
+    * ~~[label](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sqf0.html)~~ → merge with `title`
+    * [title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7fz0.html)
+    * [list-item](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ctg0.html)
+* [p](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7xd0.html)
+* [sec](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-gby0.html)
+    * ~~[label](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sqf0.html)~~ → merge with `title`
+    * [title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7fz0.html)
+* [statement](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sdp0.html)
+    * ~~[label](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sqf0.html)~~ → merge with `title`
+    * [title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7fz0.html)
+* [sub](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-9zq0.html)
+* [sup](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-5zb0.html)
+* [xref](https://jats.nlm.nih.gov/archiving/tag-library/0.4/n-gnb0.html)
