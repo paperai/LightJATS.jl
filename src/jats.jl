@@ -20,14 +20,13 @@ function readjats(path::String)
         push!(article, parse_front(xml_front))
 
         body = findfirst(xml_article, "body")
-        # push!(article, parse_body(body))
+        push!(article, parse_body(body))
 
         back = find(xml_article, "back")
         if !isempty(back)
             #push!(article, parse_back(back[1]))
         end
 
-        #=
         push!(article, Tree("floats-group"))
         append!(article[end], findfloats(article))
         floats = find(xml_article, "floats-group")
@@ -35,8 +34,7 @@ function readjats(path::String)
             append!(article[end], parse_body(floats[1]).children)
         end
         isempty(article[end]) && deleteat!(article,length(article)) # no floats
-        =#
-        
+
         maths = findall(article, "math")
         for i = 1:length(maths)
             #math = maths[i]
@@ -45,7 +43,7 @@ function readjats(path::String)
             #replace!(math, convert(Tree,mathml))
         end
 
-        tokenize_word!(article)
+        # tokenize_word!(article)
         postprocess!(article)
         nonrecursive!(article)
         return article
@@ -318,5 +316,4 @@ function normalize_mathml!(mathml::EzXML.Node)
             end
         end
     end
-
 end

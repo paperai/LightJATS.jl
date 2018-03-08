@@ -12,7 +12,6 @@ function create_sample(rootpath::String)
         isfile(pdfpath) || continue
 
         tree = readjats(xmlpath)
-        delete!(tree["body"])
 
         # remove non-figure floats
         if tree[end].name == "floats-group"
@@ -37,11 +36,13 @@ function create_sample(rootpath::String)
             end
         end
 
-        dir = "C:/Users/hshindo/Documents/sample_xml4-5/$filename"
+        dir = "C:/Users/hshindo/Documents/sample_xml4-6/$filename"
         isdir(dir) || mkdir(dir)
         open("$dir/$file","w") do f
             println(f, toxml(tree))
         end
+        return
+
         isfile(pdfpath) && cp(pdfpath,"$dir/$filename.pdf")
         pdftxtpath = joinpath(rootpath, "$filename.pdf.txt")
         if isfile(pdftxtpath)
@@ -64,5 +65,23 @@ function create_sample(rootpath::String)
         saveimages(pdfpath, options=["-o",dir,"-dpi","200"])
     end
 end
+
+function jsonize!(tree::Tree)
+    n = count(isempty, tree.children)
+    if n > 0
+        strs = String[]
+        for c in tree.children
+            if isempty(c)
+                push!(strs, c.name)
+            else
+                push!(strs, "[$(c.name)]")
+            end
+        end
+        setchildren!(tree, Tree(join(strs," ")))
+    else
+        foreach(jsonize!, tree.children)
+    end
+end
+
 #create_sample("C:/Users/hshindo/Desktop/PMC500")
 create_sample("D:/PMC500")
