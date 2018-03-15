@@ -12,12 +12,7 @@
             * [surname](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sg90.html)
             * [suffix](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-djb0.html)
     * [body](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-jn50.html)
-        * [def-list](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-4hx0.html)
-            * ~~[label](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sqf0.html)~~ → merge with `title`
-            * [title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7fz0.html)
-            * [def-item](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ndx0.html)
-                * [term](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-pdm0.html)
-                * [def](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-xtx0.html)
+        * ~~[def-list](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-4hx0.html)~~ → merge with `list`
         * [disp-formula](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-tmx0.html)
             * [mml:math](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-cgn0.html)
             * [label](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sqf0.html)
@@ -28,7 +23,7 @@
                 * ~~[p](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7xd0.html)~~ → merge with `caption`
         * [list](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-64g0.html)
             * ~~[label](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-sqf0.html)~~ → merge with `title`
-            * [title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7fz0.html)
+            * ~~[title](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7fz0.html)~~
             * [list-item](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-ctg0.html)
         * [p](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-7xd0.html)
         * [sec](https://jats.nlm.nih.gov/archiving/tag-library/1.1d1/n-gby0.html)
