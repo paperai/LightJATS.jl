@@ -24,7 +24,7 @@ function readjats(path::String)
 
         back = find(xml_article, "back")
         if !isempty(back)
-            #push!(article, parse_back(back[1]))
+            push!(article, parse_back(back[1]))
         end
 
         push!(article, Tree("floats-group"))
