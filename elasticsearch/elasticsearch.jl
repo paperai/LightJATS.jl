@@ -4,6 +4,7 @@ using EzXML
 using JSON
 
 export arxiv_esjsons
+
 function arxiv_esjson(xmlpath::String)
     xmlstr = open(readstring, xmlpath)
     xmlstr = replace(xmlstr, r"<arXiv .+?>", "<arXiv>")
