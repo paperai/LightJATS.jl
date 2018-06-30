@@ -7,54 +7,42 @@ struct UnsupportedException <: Exception
 end
 
 function readjats(path::String)
-    try
-        xml_article = root(readxml(path))
-        @assert nodename(xml_article) == "article"
-        if countelements(xml_article) < 3
-            warn("#xml elements < 3")
-            return
-        end
+    xml_article = root(readxml(path))
+    @assert nodename(xml_article) == "article"
+    countelements(xml_article) < 3 && throw("#xml elements < 3")
 
-        article = Tree("article")
-        xml_front = findfirst(xml_article, "front")
-        push!(article, parse_front(xml_front))
+    article = Tree("article")
+    xml_front = findfirst(xml_article, "front")
+    push!(article, parse_front(xml_front))
 
-        body = findfirst(xml_article, "body")
-        push!(article, parse_body(body))
+    body = findfirst(xml_article, "body")
+    push!(article, parse_body(body))
 
-        back = find(xml_article, "back")
-        if !isempty(back)
-            push!(article, parse_back(back[1]))
-        end
-
-        push!(article, Tree("floats-group"))
-        append!(article[end], findfloats(article))
-        floats = find(xml_article, "floats-group")
-        if !isempty(floats)
-            append!(article[end], parse_body(floats[1]).children)
-        end
-        isempty(article[end]) && deleteat!(article,length(article)) # no floats
-
-        maths = findall(article, "math")
-        for i = 1:length(maths)
-            #math = maths[i]
-            #mathml = root(parsexml(toxml(math)))
-            #normalize_mathml!(mathml)
-            #replace!(math, convert(Tree,mathml))
-        end
-
-        # tokenize_word!(article)
-        postprocess!(article)
-        nonrecursive!(article)
-        return article
-    catch e
-        if isa(e, UnsupportedException)
-            println(e.message)
-            return
-        else
-            rethrow(e)
-        end
+    back = find(xml_article, "back")
+    if !isempty(back)
+        push!(article, parse_back(back[1]))
     end
+
+    push!(article, Tree("floats-group"))
+    append!(article[end], findfloats(article))
+    floats = find(xml_article, "floats-group")
+    if !isempty(floats)
+        append!(article[end], parse_body(floats[1]).children)
+    end
+    isempty(article[end]) && deleteat!(article,length(article)) # no floats
+
+    maths = findall(article, "math")
+    for i = 1:length(maths)
+        math = maths[i]
+        mathml = root(parsexml(toxml(math)))
+        normalize_mathml!(mathml)
+        replace!(math, convert(Tree,mathml))
+    end
+
+    # tokenize_word!(article)
+    postprocess!(article)
+    nonrecursive!(article)
+    article
 end
 
 function Base.convert(::Type{Tree}, enode::EzXML.Node, dict=Dict())
